@@ -79,16 +79,22 @@ body::before {
   padding: 40px 0 30px;
 }
 
-.header__icon {
-  font-size: 48px;
-  margin-bottom: 12px;
-  display: block;
-  animation: float 3s ease-in-out infinite;
+.header__logo {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.logo-img {
+  width: 120px;
+  height: auto;
+  filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.2));
+  animation: float 4s ease-in-out infinite;
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-10px) scale(1.02); }
 }
 
 .header__title {
