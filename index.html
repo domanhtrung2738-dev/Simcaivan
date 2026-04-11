@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sim Cài Vận - Phân tích phong thủy số điện thoại theo Kinh Dịch và Bát Cực Linh Số">
+  <title>Sim Cài Vận — Phong Thủy Sim</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☰</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <span class="header__icon">☰</span>
+      <h1 class="header__title">Sim Cài Vận</h1>
+      <p class="header__subtitle">Phân tích phong thủy sim theo Kinh Dịch & Bát Cực Linh Số</p>
+    </header>
+
+    <!-- Tabs -->
+    <nav class="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="tab-single" role="tab" id="tab-btn-single">
+        <span class="tab-btn__icon">🔍</span>
+        <span>Kiểm tra sim</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-batch" role="tab" id="tab-btn-batch">
+        <span class="tab-btn__icon">📋</span>
+        <span>Lọc sim theo list</span>
+      </button>
+    </nav>
+
+    <!-- Tab: Single Analysis -->
+    <section class="tab-content active" id="tab-single" role="tabpanel">
+      <div class="input-section">
+        <div class="input-group">
+          <label for="input-single">Nhập số điện thoại</label>
+          <input
+            type="text"
+            id="input-single"
+            class="input-phone"
+            placeholder="VD: 0987.654.321"
+            autocomplete="off"
+            maxlength="20"
+          >
+          <button class="btn-analyze" id="btn-single">Phân tích</button>
+        </div>
+      </div>
+
+      <div id="result-single">
+        <div class="empty-state">
+          <div class="empty-state__icon">☰</div>
+          <div class="empty-state__text">Nhập số điện thoại để xem phong thủy</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab: Batch Analysis -->
+    <section class="tab-content" id="tab-batch" role="tabpanel">
+      <div class="input-section">
+        <div class="input-group">
+          <label for="input-batch">Nhập danh sách số sim</label>
+          <textarea
+            id="input-batch"
+            class="input-batch"
+            placeholder="Mỗi dòng 1 số, có thể thêm giá và nhà mạng cách bởi dấu |&#10;VD:&#10;0987654321&#10;0912345678 | 500000 | Viettel&#10;0368888999 | 1200000"
+          ></textarea>
+        </div>
+        <div class="batch-actions">
+          <span class="batch-hint">💡 Hỗ trợ format: số | giá | nhà mạng</span>
+          <button class="btn-analyze" id="btn-batch" style="position:static;transform:none;width:auto">
+            Phân tích tất cả
+          </button>
+        </div>
+      </div>
+
+      <div id="result-batch">
+        <div class="empty-state">
+          <div class="empty-state__icon">📋</div>
+          <div class="empty-state__text">Nhập danh sách số sim để phân tích hàng loạt</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Scripts: data → engine → app -->
+  <script src="js/queDich-data.js"></script>
+  <script src="js/phongthuy-engine.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
