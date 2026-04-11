@@ -243,23 +243,24 @@ function renderQueDichCard(q) {
 }
 
 function renderHaoViz(haoArray, haoDong) {
-  let html = '<div class="hao-viz" style="display:flex; flex-direction:column; gap:4px; font-size:14px;">';
+  let html = '<div class="hao-viz" style="display:flex; flex-direction:column; gap:4px; font-size:14px; margin-top: 20px;">';
   // Render from top (hào 6) to bottom (hào 1)
   for (let i = 5; i >= 0; i--) {
     const isDong = (i + 1) === haoDong;
     const txt = haoArray[i];
     
-    // Highlight The/Ung
+    // Highlight The/Ung & clean up leading dashes
     let displayTxt = txt;
     if (txt && typeof txt === 'string') {
+      displayTxt = displayTxt.replace(/^[\s-]+/, ''); // remove leading "- " or spaces
       displayTxt = displayTxt.replace('(Thế)', '<strong style="color:var(--accent-gold)">(Thế)</strong>')
                              .replace('(Ứng)', '<strong style="color:#2196f3">(Ứng)</strong>');
     }
     
     html += `
-      <div class="hao-line" style="display:flex; align-items:center; opacity: ${isDong ? '1' : '0.85'}; ${isDong ? 'color: var(--accent-gold); font-weight: bold;' : ''}">
+      <div class="hao-line" style="display:flex; align-items:center; height: auto; min-height: 28px; opacity: ${isDong ? '1' : '0.85'}; ${isDong ? 'color: var(--accent-gold); font-weight: bold;' : ''}">
         <span class="hao-line__num" style="min-width: 16px; opacity:0.5">${i + 1}</span>
-        <span style="flex: 1; padding: 2px 6px; background: ${isDong ? 'rgba(255,215,64,0.1)' : 'rgba(255,255,255,0.05)'}; border-radius:4px; border-left: 2px solid ${isDong ? 'var(--accent-gold)' : 'transparent'};">
+        <span style="flex: 1; padding: 4px 8px; line-height: 1.4; background: ${isDong ? 'rgba(255,215,64,0.1)' : 'rgba(255,255,255,0.05)'}; border-radius:4px; border-left: 2px solid ${isDong ? 'var(--accent-gold)' : 'transparent'};">
           ${displayTxt}
         </span>
       </div>`;
