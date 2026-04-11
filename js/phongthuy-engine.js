@@ -372,7 +372,13 @@ function calculatePhiCung(year, gender) {
   
   let cung = LAC_THU_MAP[finalNum]?.name;
   if (finalNum === 5) {
-    cung = gender === 'male' ? 'Khôn (Trung cung)' : 'Cấn (Trung cung)';
+    if (gender === 'male') {
+      finalNum = 8;
+      cung = 'Cấn (Trung cung biến)';
+    } else {
+      finalNum = 2;
+      cung = 'Khôn (Trung cung biến)';
+    }
   }
 
   return { number: finalNum, cung };
