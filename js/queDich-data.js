@@ -382,3 +382,81 @@ const NHA_MANG_PREFIXES = {
   '056': 'Vietnamobile', '058': 'Vietnamobile', '092': 'Vietnamobile',
   '099': 'Gmobile', '059': 'Gmobile',
 };
+
+/* ========== TỪ TRƯỜNG PHỐI HỢP ========== */
+const TU_TRUONG_PHOI_HOP = {
+  'Diên Niên': {
+    'Diên Niên': 'Năng lực làm việc cao. Có tài lãnh đạo.',
+    'Lục Sát': 'Tính thu liễm buồn, thiếu quyết đoán.',
+    'Họa Hại': 'Quan lộ đứt gánh, ngoa ngôn.',
+    'Tuyệt Mệnh': 'Lười nhác, không làm đến nơi đến chốn.'
+  },
+  'Sinh Khí': {
+    'Diên Niên': 'Lãnh đạo, lợi cho học hành, quan lộ tốt.',
+    'Sinh Khí': 'Có quý nhân đỡ đầu, chuyển nguy thành an.',
+    'Thiên Y': 'Quý nhân mang tài phú đến cho.',
+    'Lục Sát': 'Khéo léo.',
+    'Họa Hại': 'Tự cao. Tự nhận mình giỏi, ảo tưởng.',
+    'Ngũ Quỷ': 'Khéo đong đưa, tính nết hơi nhây.',
+    'Tuyệt Mệnh': 'Vui vẻ, hoài bão nhưng đầu voi đuôi chuột.'
+  },
+  'Thiên Y': {
+    'Diên Niên': 'Tự mình làm chủ, giỏi lập nghiệp.',
+    'Sinh Khí': 'Nhiều bạn bè, sống hào phóng.',
+    'Thiên Y': 'Tăng cường tài phú, dễ có 2 vợ.',
+    'Phục Vị': 'Thiên y kéo dài.',
+    'Lục Sát': 'Dễ vì nữ nhân mà tổn tài.',
+    'Họa Hại': 'Sĩ diện, thích nịnh hót, thích làm chim lợn.',
+    'Ngũ Quỷ': 'Suy nghĩ nông cạn mà hao tài lộc.',
+    'Tuyệt Mệnh': 'Đầu tư không suy nghĩ, dễ phá tài.'
+  },
+  'Phục Vị': {
+    'Diên Niên': 'Người có năng lực, có quyền hành.',
+    'Sinh Khí': 'Cẩn cung càng mạnh, tăng mức độ x 2.',
+    'Thiên Y': 'Nhờ lòng kiên nhẫn mà tạo ra tiền tài.',
+    'Phục Vị': 'Kiên nhẫn mới thành công.',
+    'Lục Sát': 'Lục sát bị tăng gấp đôi.',
+    'Họa Hại': 'Mạnh mồm, tự cho mình đúng.',
+    'Ngũ Quỷ': 'Ngũ Quỷ bị tăng gấp đôi.',
+    'Tuyệt Mệnh': 'Liều lĩnh.'
+  },
+  'Lục Sát': {
+    'Diên Niên': 'Đào hoa, quan hệ xã hội tốt.',
+    'Sinh Khí': 'Nhân duyên tốt.',
+    'Thiên Y': 'Làm dịch vụ, phù hợp với công việc tỉ mỉ.',
+    'Phục Vị': 'Lục sát bị kéo dài.',
+    'Lục Sát': 'U buồn, dễ lo âu trầm cảm.',
+    'Họa Hại': 'Dễ mất lòng, không quan tâm đến cảm xúc người khác.',
+    'Ngũ Quỷ': 'Dễ thay đổi, ba phải.',
+    'Tuyệt Mệnh': 'Cảm giác đè nén không chịu được áp lực cao, dễ bỏ dở.'
+  },
+  'Họa Hại': {
+    'Diên Niên': 'Ăn nói tốt, dễ thuyết phục người khác.',
+    'Sinh Khí': 'Nói có người nghe, đe có kẻ sợ.',
+    'Thiên Y': 'Kiếm tiền bằng miệng, chốt sale nhanh.',
+    'Phục Vị': 'Họa hại bị kéo dài.',
+    'Lục Sát': 'Lời nói dễ mất lòng, hay mang cảm xúc tiêu cực.',
+    'Họa Hại': 'Tính nóng nảy, nói thẳng, thiếu kiên nhẫn.',
+    'Ngũ Quỷ': 'Cách nói chuyện khiến người khác hiểu lầm.',
+    'Tuyệt Mệnh': 'Lời nói dễ khiến người khác tổn thương.'
+  },
+  'Ngũ Quỷ': {
+    'Diên Niên': 'Linh hoạt, ứng biến nhanh.',
+    'Sinh Khí': 'Có nhiều ý tưởng đột phá.',
+    'Thiên Y': 'Ý tưởng tài hoa mà ra tiền.',
+    'Lục Sát': 'Dễ đồng tính, xu hướng tình dục tiêu cực.',
+    'Họa Hại': 'Tự suy diễn nên dễ mắc thị phi.',
+    'Ngũ Quỷ': 'Có tài nhưng không ổn định, hay gặp trắc trở.',
+    'Tuyệt Mệnh': 'Nhận được thông tin tốt là nắm bắt liền, nhưng dễ mắc bệnh hiểm nghèo.'
+  },
+  'Tuyệt Mệnh': {
+    'Diên Niên': 'Liều lĩnh, đầu tư mạnh bạo.',
+    'Sinh Khí': 'Vui vẻ, hài hước.',
+    'Thiên Y': 'Thông qua nỗ lực lớn mới kiếm được tiền.',
+    'Lục Sát': 'Buồn nhiều hơn vui, cuộc sống dễ rơi vào bí bách.',
+    'Họa Hại': 'Dễ cãi vã, dễ gặp tai nạn bất ngờ.',
+    'Ngũ Quỷ': 'Nhiều ý tưởng kỳ dị. Chủ sức khỏe yếu.',
+    'Tuyệt Mệnh': 'Chủ quan, bốc đồng, dễ dính cờ bạc nghiệp ngập.'
+  }
+};
+
