@@ -21,22 +21,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderBook(query) {
     let html = '';
-    
-    // 1. Từ trường
-    const ttHtml = renderTuTruong(query);
-    if (ttHtml) html += `<div class="book-chapter"><h2 class="book-chapter-title">🧲 Từ Trường (Bát Cực Linh Số)</h2><div class="book-grid">${ttHtml}</div></div>`;
+
+    // 1. Tiên Thiên Bát Quái
+    const quaiHtml = renderBatQuai(query);
+    if (quaiHtml) html += `<div class="book-chapter"><h2 class="book-chapter-title">☯ Tiên Thiên Bát Quái</h2><div class="book-grid">${quaiHtml}</div></div>`;
 
     // 2. Phối hợp từ trường
     const phHtml = renderPhoiHop(query);
     if (phHtml) html += `<div class="book-chapter"><h2 class="book-chapter-title">🔗 Sự Phối Hợp Giữa Các Từ Trường</h2><div class="book-grid">${phHtml}</div></div>`;
 
-    // 3. Quẻ Dịch
+    // 3. Từ trường
+    const ttHtml = renderTuTruong(query);
+    if (ttHtml) html += `<div class="book-chapter"><h2 class="book-chapter-title">🧲 Từ Trường (Bát Cực Linh Số)</h2><div class="book-grid">${ttHtml}</div></div>`;
+
+    // 4. Quẻ Dịch
     const queHtml = renderQueDich(query);
     if (queHtml) html += `<div class="book-chapter"><h2 class="book-chapter-title">☰ 64 Quẻ Dịch</h2><div class="book-grid">${queHtml}</div></div>`;
-
-    // 4. Tiên Thiên Bát Quái
-    const quaiHtml = renderBatQuai(query);
-    if (quaiHtml) html += `<div class="book-chapter"><h2 class="book-chapter-title">☯ Tiên Thiên Bát Quái</h2><div class="book-grid">${quaiHtml}</div></div>`;
 
     if (!html) {
       html = `
