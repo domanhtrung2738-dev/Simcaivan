@@ -200,21 +200,23 @@ const QUAI_DESCRIPTIONS = {
   Khảm: {
     number: 1,
     uu: 'Phản ứng nhanh nhạy, tâm địa hiền lương nên dễ tin bạn bè.',
-  'Ly': {
+    nhuoc: 'Dễ bệt lãnh đạo, thiên hướng theo phe cánh tả. Hay thay đổi, dễ sốt ruột, không nuôi chí bền, hay chỉ trích người khác nên bị bạn bè xa lánh. Tự cho mình là đúng, đôi khi liều lĩnh mạo hiểm trong làm ăn, không giữ được tiền. Nếu nhiều tiền dễ mắc trọng bệnh. Nữ dùng thì khó mang thai. Nếu đi cùng Ngũ Quỷ dễ mắc ung thư.'
+  },
+  Ly: {
     number: 9,
-    uu: 'Tính cảm phong phú, biết cách thu hút người khác giỏi, có mắt thẩm mỹ, biết ăn mặc.',
-    nhuoc: 'Đôi khi lụy tình, hôn nhân dễ đổ vỡ, phù hợp với nghề thiết kế thời trang. Do dự dễ đánh mất cơ hội. Không giữ được tiền.',
+    uu: 'Tình cảm phong phú, biết cách thu hút người khác giới, có mắt thẩm mỹ, biết ăn mặc.',
+    nhuoc: 'Đôi khi lụy tình, hôn nhân dễ đổ vỡ, phù hợp với nghề thiết kế thời trang. Do dự dễ đánh mất cơ hội. Không giữ được tiền.'
   },
-  'Chấn': {
+  Chấn: {
     number: 3,
-    uu: 'Mồm miệng đỡ chân tay, nếu là người dành đa thì ngoa ngôn, biết mời chào, là những người biết dùng miệng lưỡi kiếm ăn.',
-    nhuoc: 'Tính khí nóng nảy, dễ bốc đồng. Vì mồm miệng mà cũng dễ mất bạn, mất quan hệ. Sĩ diện, hay phàn nàn. Tài bạch khó giữ, mạnh miệng mà nhiều khi chỉ quá tay. Dễ mắc bệnh đường ruột, tim mạch. Hiếu thắng, sức đề kháng yếu.',
+    uu: 'Mồm miệng đỡ chân tay, nếu là người đanh đá thì ngoa ngôn, biết mời chào, là những người biết dùng miệng lưỡi kiếm ăn',
+    nhuoc: 'Tính khí nóng nảy, dễ bốc đồng. Vì mồm miệng mà cũng dễ mất bạn, mất quan hệ. Sĩ diện, hay phàn nàn. Tài bạch khó giữ tiền, mạnh miệng mà nhiều khi chi quá tay. Dễ mắc bệnh đường ruột, tim mạch. Hiếu thắng, sức đề kháng yếu.'
   },
-  'Tốn': {
+  Tốn: {
     number: 4,
     uu: 'Tài hoa, có lý luận, phản ứng mau lẹ. Thường làm những việc trái nghịch hoàn cảnh mà người khác khó có thể tưởng tượng ra.',
-    nhuoc: 'Không ổn định, không an phận, dễ mang họa sát thân, chiêu thị phi. Tính đôi khi lười nhác, làm việc đầu voi đuôi chuột. Nhiều ý đồ không tốt, hay nghi ngờ, đa nghi, tiền nhanh có nhanh đi. Không có quý nhân, phù hợp với tăng đạo, dễ gần tầng giới huyền môn, tin vào tâm linh. Đi cùng Tuyệt Mệnh dễ mắc ung thư.',
-  },
+    nhuoc: 'Không ổn định, không an phận, dễ mang họa sát thân, chiêu thị phi, tính đôi khi lười nhác, làm việc đầu voi đuôi chuột, không làm đến cùng vì dễ bị phân tán công việc, nhiều ý đồ không tốt, hay nghi ngờ, đa nghi, tiền nhanh có nhanh đi. Dễ ngoại tình, ly hôn, dễ mắc bệnh răng miệng. Không có quý nhân, phù hợp với tăng đạo, dễ gần tăng giới huyền môn, tin vào tâm linh. Đi cùng Tuyệt Mệnh dễ mắc ung thư.'
+  }
 };
 
 /* ---------- 6. Bảng biến quái khi hào động ----------
