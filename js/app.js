@@ -173,7 +173,7 @@ function renderTuTruongCard(tuTruong, luanGiai, title = '🧲 Từ Trường Nă
             title="${tt.meaning}">
         <span>${tt.icon}</span>
         <span>${tt.name}</span>
-        <span class="tu-truong-pair">(${tt.pair})</span>
+        <span class="tu-truong-pair">(${tt.pairStr || tt.pair})</span>
         <span class="tooltip">${tt.meaning}</span>
       </span>`;
   });
@@ -243,18 +243,25 @@ function renderQueDichCard(q) {
 }
 
 function renderHaoViz(haoArray, haoDong) {
-  let html = '<div class="hao-viz">';
+  let html = '<div class="hao-viz" style="display:flex; flex-direction:column; gap:4px; font-size:14px;">';
   // Render from top (hào 6) to bottom (hào 1)
   for (let i = 5; i >= 0; i--) {
     const isDong = (i + 1) === haoDong;
-    const val = haoArray[i];
+    const txt = haoArray[i];
+    
+    // Highlight The/Ung
+    let displayTxt = txt;
+    if (txt && typeof txt === 'string') {
+      displayTxt = displayTxt.replace('(Thế)', '<strong style="color:var(--accent-gold)">(Thế)</strong>')
+                             .replace('(Ứng)', '<strong style="color:#2196f3">(Ứng)</strong>');
+    }
+    
     html += `
-      <div class="hao-line ${isDong ? 'is-dong' : ''}" data-value="${val}">
-        <span class="hao-line__num">${i + 1}</span>
-        ${val === 1
-          ? '<span class="hao-line__bar"></span>'
-          : '<span class="hao-line__bar"></span><span class="hao-line__bar"></span>'
-        }
+      <div class="hao-line" style="display:flex; align-items:center; opacity: ${isDong ? '1' : '0.85'}; ${isDong ? 'color: var(--accent-gold); font-weight: bold;' : ''}">
+        <span class="hao-line__num" style="min-width: 16px; opacity:0.5">${i + 1}</span>
+        <span style="flex: 1; padding: 2px 6px; background: ${isDong ? 'rgba(255,215,64,0.1)' : 'rgba(255,255,255,0.05)'}; border-radius:4px; border-left: 2px solid ${isDong ? 'var(--accent-gold)' : 'transparent'};">
+          ${displayTxt}
+        </span>
       </div>`;
   }
   html += '</div>';
@@ -271,6 +278,15 @@ function renderLuanGiaiCard(luanGiai) {
     </div>`;
 }
 
+function getQueColor(queName) {
+  if (!queName || typeof QUE_HOP_CAU === 'undefined') return '#ffffff';
+  if (QUE_HOP_CAU.tai?.includes(queName)) return 'var(--accent-gold)';    // Vàng
+  if (QUE_HOP_CAU.sucKhoe?.includes(queName)) return 'var(--color-cat)'; // Xanh lá
+  if (QUE_HOP_CAU.quanHoc?.includes(queName)) return '#ff9100';          // Cam
+  if (QUE_HOP_CAU.xau?.includes(queName)) return 'var(--color-hung)';    // Đỏ xậm
+  return '#ffffff'; // Bình hòa
+}
+
 /* ========== BATCH RENDER ========== */
 
 function renderBatchResult(analyzed) {
@@ -283,13 +299,17 @@ function renderBatchResult(analyzed) {
       `<span class="tu-truong-tag" data-type="${tt.type}" data-level="${tt.level || ''}" title="${tt.meaning}">${tt.icon} ${tt.name}</span>`
     ).join('');
 
+    const chuColor = getQueColor(r.queDich.queChu?.name);
+    const bienColor = getQueColor(r.queDich.queBien?.name);
+
     rows += `
       <tr>
+        <td class="checkbox-cell" onclick="event.stopPropagation()"><input type="checkbox"></td>
         <td>${idx + 1}</td>
         <td class="phone-cell" data-phone="${r.digits}">${r.formatted}</td>
         <td class="tt-cell">${ttTags}</td>
-        <td class="que-cell">${r.queDich.queChu?.name || '—'}</td>
-        <td class="que-cell">${r.queDich.queBien?.name || '—'}</td>
+        <td class="que-cell" style="color: ${chuColor}; font-weight: bold;">${r.queDich.queChu?.name || '—'}</td>
+        <td class="que-cell" style="color: ${bienColor}; font-weight: bold;">${r.queDich.queBien?.name || '—'}</td>
         <td>${item.price || '—'}</td>
         <td>${item.carrier || r.nhaMang}</td>
         <td>${r.luanGiai.catPercent}%</td>
@@ -302,6 +322,7 @@ function renderBatchResult(analyzed) {
       <table class="batch-table" id="batch-table">
         <thead>
           <tr>
+            <th width="40"></th>
             <th>#</th>
             <th>Số điện thoại</th>
             <th>Từ trường</th>

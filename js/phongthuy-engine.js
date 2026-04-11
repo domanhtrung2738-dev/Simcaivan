@@ -28,79 +28,11 @@ function detectNhaMang(digits) {
 /* ========== PHÂN TÍCH TỪ TRƯỜNG (Bát Cực Linh Số) ========== */
 
 /**
- * Phân tích từ trường cho một cặp 2 chữ số
- * Trả về object { code, name, type, ... } hoặc đặc biệt cho 0/5
+ * Phân tích từ trường cơ bản cho mồi cặp 2 số không chứa 0/5
  */
-function analyzePair(d1, d2) {
+function analyzePairBase(d1, d2) {
   const n1 = Number(d1);
   const n2 = Number(d2);
-
-  // Cặp có 0 và/hoặc 5
-  const isSpecial1 = (n1 === 0 || n1 === 5);
-  const isSpecial2 = (n2 === 0 || n2 === 5);
-
-  if (isSpecial1 && isSpecial2) {
-    // 00, 55, 05, 50
-    if (n1 === n2) {
-      return {
-        pair: `${d1}${d2}`,
-        code: n1 === 0 ? 'an_phuc_vi' : 'hien_phuc_vi',
-        name: n1 === 0 ? 'Phục Vị ẩn' : 'Phục Vị hiển',
-        type: n1 === 0 ? 'neutral' : 'cat',
-        icon: n1 === 0 ? '🌑' : '☀',
-        color: n1 === 0 ? '#607d8b' : '#ffd740',
-        meaning: n1 === 0
-          ? 'Năng lượng ẩn tàng, không biểu hiện rõ ràng'
-          : 'Năng lượng kích hoạt, hiển lộ mạnh mẽ',
-        isSpecial: true,
-      };
-    } else {
-      return {
-        pair: `${d1}${d2}`,
-        code: 'an_hien',
-        name: n1 === 0 ? 'Ẩn → Hiển' : 'Hiển → Ẩn',
-        type: 'neutral',
-        icon: '🔄',
-        color: '#90a4ae',
-        meaning: 'Chuyển đổi giữa ẩn tàng và hiển lộ',
-        isSpecial: true,
-      };
-    }
-  }
-
-  if (isSpecial1 || isSpecial2) {
-    const specialNum = isSpecial1 ? n1 : n2;
-    const normalNum = isSpecial1 ? n2 : n1;
-    const normalQuai = LAC_THU_MAP[normalNum];
-
-    if (specialNum === 0) {
-      return {
-        pair: `${d1}${d2}`,
-        code: 'an_tang',
-        name: `${normalQuai ? normalQuai.name : normalNum} ẩn`,
-        type: 'neutral',
-        icon: '🌑',
-        color: '#607d8b',
-        meaning: `Năng lượng số ${normalNum} bị ẩn tàng, suy giảm`,
-        isSpecial: true,
-        relatedNum: normalNum,
-      };
-    } else {
-      return {
-        pair: `${d1}${d2}`,
-        code: 'hien_lo',
-        name: `${normalQuai ? normalQuai.name : normalNum} hiển`,
-        type: 'amplified',
-        icon: '☀',
-        color: '#ffd740',
-        meaning: `Năng lượng số ${normalNum} được kích hoạt, khuếch đại`,
-        isSpecial: true,
-        relatedNum: normalNum,
-      };
-    }
-  }
-
-  // Cặp bình thường: tra bảng Du Niên
   const grid = DU_NIEN_GRID[n1];
   if (!grid) return null;
   const code = grid[n2];
@@ -122,17 +54,121 @@ function analyzePair(d1, d2) {
 
 /**
  * Phân tích toàn bộ từ trường của dãy số
- * Trả về mảng các từ trường cho từng cặp liền kề
+ * Trả về mảng các từ trường định tuyến qua 0/5
  */
 function analyzeTuTruong(digits) {
   const results = [];
-  for (let i = 0; i < digits.length - 1; i++) {
-    const pair = analyzePair(digits[i], digits[i + 1]);
-    if (pair) {
-      pair.position = i;
-      results.push(pair);
+  const chars = digits.split('');
+  
+  // Lọc lấy index các số không phải 0/5
+  const nonOps = [];
+  for (let i = 0; i < chars.length; i++) {
+    if (chars[i] !== '0' && chars[i] !== '5') {
+      nonOps.push(i);
     }
   }
+
+  // 1. Tạo các cặp chính từ những số liền kề (vượt qua 0, 5)
+  for (let i = 0; i < nonOps.length - 1; i++) {
+    const startIdx = nonOps[i];
+    const endIdx = nonOps[i+1];
+    const segment = digits.substring(startIdx, endIdx + 1);
+    const has0 = segment.includes('0');
+    const has5 = segment.includes('5');
+    
+    const d1 = digits[startIdx];
+    const d2 = digits[endIdx];
+    
+    let pairObj = analyzePairBase(d1, d2); 
+    if (pairObj) {
+      pairObj.pairStr = segment; 
+      pairObj.position = startIdx; 
+      
+      // Tác động ẩn/hiển của 0/5
+      if (has0 || has5) {
+        let modifier = [];
+        if (has0) modifier.push('Ẩn');
+        if (has5) modifier.push('Hiển');
+        pairObj.name = `${pairObj.name} (${modifier.join('/')})`;
+        pairObj.meaning = `[${modifier.join('/')}] ${pairObj.meaning}`;
+      }
+      
+      // Nhân đôi Icon cho Bậc 1-2
+      if (pairObj.code && typeof TU_TRUONG_INFO !== 'undefined' && TU_TRUONG_INFO[pairObj.code]) {
+         const info = TU_TRUONG_INFO[pairObj.code];
+         if (info.pairs) {
+           const idx = info.pairs.indexOf(`${d1}${d2}`);
+           if (idx >= 0) {
+             const bac = Math.floor(idx / 2) + 1;
+             if (bac <= 2) pairObj.icon = pairObj.icon + pairObj.icon;
+           }
+         }
+      }
+      
+      results.push(pairObj);
+    }
+  }
+
+  // 2. Kích phát số đơn nếu bị cách ly ở đầu hoặc cuối chuỗi
+  if (nonOps.length > 0) {
+    const firstIdx = nonOps[0];
+    const lastIdx = nonOps[nonOps.length - 1];
+    
+    // Ở đầu dãy
+    if (firstIdx > 0) {
+      const segment = digits.substring(0, firstIdx + 1);
+      const has0 = segment.includes('0');
+      const has5 = segment.includes('5');
+      const d = digits[firstIdx];
+      const normalQuai = LAC_THU_MAP[d];
+      
+      let modifier = [];
+      if (has0) modifier.push('Ẩn tàng');
+      if (has5) modifier.push('Hiển lộ');
+      
+      results.push({
+        pair: d,
+        pairStr: segment,
+        code: 'prefix_special',
+        name: `${normalQuai ? normalQuai.name : d} (${modifier.join('/')})`,
+        type: 'neutral',
+        icon: '🔄',
+        color: '#607d8b',
+        meaning: `Số đơn ${d} bị tác động bởi ${digits.substring(0, firstIdx)} làm ${modifier.join('/')}.`,
+        isSpecial: true,
+        position: -1 // Xếp lên đầu
+      });
+    }
+    
+    // Ở cuối dãy
+    if (lastIdx < digits.length - 1) {
+      const segment = digits.substring(lastIdx, digits.length);
+      const has0 = segment.includes('0');
+      const has5 = segment.includes('5');
+      const d = digits[lastIdx];
+      const normalQuai = LAC_THU_MAP[d];
+      
+      let modifier = [];
+      if (has0) modifier.push('Ẩn tàng');
+      if (has5) modifier.push('Hiển lộ');
+      
+      results.push({
+        pair: d,
+        pairStr: segment,
+        code: 'suffix_special',
+        name: `${normalQuai ? normalQuai.name : d} (${modifier.join('/')})`,
+        type: 'neutral',
+        icon: '🔄',
+        color: '#607d8b',
+        meaning: `Số đơn ${d} bị tác động bởi ${digits.substring(lastIdx + 1)} làm ${modifier.join('/')}.`,
+        isSpecial: true,
+        position: digits.length
+      });
+    }
+  }
+
+  // Sắp xếp lại theo trật tự từ trái qua phải
+  results.sort((a, b) => a.position - b.position);
   return results;
 }
 
@@ -242,10 +278,9 @@ function calculateQueDich(digits) {
   const bienKey = `${bienNgoaiNum}_${bienNoiNum}`;
   const queBien = QUE_64[bienKey];
 
-  // Xây dựng 6 hào (dạng array)
-  const haoArray = [...noiQuai.hao, ...ngoaiQuai.hao]; // hào 1-6 (từ dưới lên)
-  const haoBienArray = [...haoArray];
-  haoBienArray[haoDong - 1] = haoBienArray[haoDong - 1] === 1 ? 0 : 1;
+  // Lấy danh sách 6 hào (từ dưới lên trên, index 0 = Hào 1)
+  const haoArray = queChu.hao_text || [...noiQuai.hao, ...ngoaiQuai.hao]; 
+  const haoBienArray = queBien.hao_text || [...haoArray];
 
   return {
     digits,
@@ -331,6 +366,21 @@ function generateLuanGiai(queDichResult, tuTruongList) {
   const dominant = sortedBreakdown.slice(0, 3);
   if (dominant.length) {
     parts.push(`📊 Từ trường chủ đạo: ${dominant.map(d => `${d.name}(×${d.count})`).join(', ')}`);
+    
+    // Thêm luận giải chi tiết chuyên sâu cho từ trường chủ đạo
+    dominant.forEach(d => {
+      if (d.code && typeof TU_TRUONG_INFO !== 'undefined' && TU_TRUONG_INFO[d.code] && TU_TRUONG_INFO[d.code].details) {
+        const details = TU_TRUONG_INFO[d.code].details;
+        parts.push(`
+          <div class="luan-giai-detail" style="margin-top: 8px; padding-left: 10px; border-left: 2px solid var(--accent-gold); font-size: 0.95rem;">
+            <strong style="color:var(--text-main);">📌 ${d.name}:</strong> <span style="font-style: italic;">${TU_TRUONG_INFO[d.code].meaning}</span>
+            <div style="margin-top: 4px;"><span style="color:var(--text-muted);">• Tính cách:</span> ${details.tinhCach}</div>
+            <div style="margin-top: 4px;"><span style="color:var(--text-muted);">• Sự nghiệp:</span> ${details.suNghiep}</div>
+            <div style="margin-top: 4px;"><span style="color:var(--color-hung);">• Lưu ý:</span> ${details.canhBao}</div>
+          </div>
+        `);
+      }
+    });
   }
 
   return {
