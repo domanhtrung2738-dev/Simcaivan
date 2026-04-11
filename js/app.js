@@ -24,6 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnSingle = document.getElementById('btn-single');
   const resultSingle = document.getElementById('result-single');
 
+  const inputYear = document.getElementById('input-year');
+  const inputGender = document.getElementById('input-gender');
+  const inputCCCD = document.getElementById('input-cccd');
+
   function runSingleAnalysis() {
     const raw = inputSingle.value.trim();
     if (!raw) return;
@@ -36,6 +40,19 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="empty-state__text">${result.error}</div>
         </div>`;
       return;
+    }
+
+    // Lấy thông tin cá nhân bổ sung
+    const year = inputYear.value.trim();
+    const gender = inputGender.value;
+    const cccd = inputCCCD.value.trim();
+
+    if (year) {
+      result.userPhiCung = calculatePhiCung(year, gender);
+    }
+    
+    if (cccd) {
+      result.cccdResult = analyzeCCCD(cccd);
     }
 
     resultSingle.innerHTML = renderSingleResult(result);
@@ -91,17 +108,46 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ========== RENDER FUNCTIONS ========== */
 
 function renderSingleResult(r) {
-  const { digits, formatted, nhaMang, tuTruong, queDich, luanGiai } = r;
+  const { digits, formatted, nhaMang, tuTruong, queDich, luanGiai, userPhiCung, cccdResult } = r;
+
+  let userHtml = '';
+  if (userPhiCung) {
+    userHtml = `
+      <div class="result-card">
+        <div class="result-card__title">👤 Bản Mệnh Cá Nhân</div>
+        <div style="font-size: 0.95rem; text-align: center; margin: 10px 0;">
+          Phi cung: <strong style="color: var(--accent-gold); font-size: 1.2rem; margin-left: 8px;">Số ${userPhiCung.number} — ${userPhiCung.cung}</strong>
+        </div>
+      </div>
+    `;
+  }
+
+  let cccdHtml = '';
+  if (cccdResult) {
+    // Đổi tham số tiêu đề để dùng lại hàm renderTuTruongCard nhưng thay đổi title
+    const cccdTuTruongHtml = renderTuTruongCard(cccdResult.tuTruong, cccdResult.luanGiai, '🪪 Năng Lượng CCCD');
+    // Thay thế số điện thoại bằng CCCD
+    cccdHtml = cccdTuTruongHtml.replace(
+      '<div class="result-card__title">🪪 Năng Lượng CCCD</div>',
+      `<div class="result-card__title">🪪 Từ Trường CCCD (${cccdResult.formatted})</div>`
+    );
+  }
 
   return `
+    <!-- Bản mệnh -->
+    ${userHtml}
+
     <!-- Phone Number Display -->
     <div class="phone-display">
       <div class="phone-display__number">${formatted}</div>
       <div class="phone-display__carrier">📱 ${nhaMang}</div>
     </div>
 
-    <!-- Từ trường -->
-    ${renderTuTruongCard(tuTruong, luanGiai)}
+    <!-- Từ trường Sim -->
+    ${renderTuTruongCard(tuTruong, luanGiai, '🧲 Từ Trường Năng Lượng')}
+
+    <!-- Từ trường CCCD -->
+    ${cccdHtml}
 
     <!-- Quẻ Dịch -->
     ${renderQueDichCard(queDich)}
@@ -111,7 +157,7 @@ function renderSingleResult(r) {
   `;
 }
 
-function renderTuTruongCard(tuTruong, luanGiai) {
+function renderTuTruongCard(tuTruong, luanGiai, title = '🧲 Từ Trường Năng Lượng') {
   const { catPercent, hungPercent, summary } = luanGiai;
   const specialPercent = 100 - catPercent - hungPercent;
 
@@ -135,7 +181,7 @@ function renderTuTruongCard(tuTruong, luanGiai) {
 
   return `
     <div class="result-card">
-      <div class="result-card__title">🧲 Từ Trường Năng Lượng</div>
+      <div class="result-card__title">${title}</div>
       ${tagsHtml}
       <div class="percent-bar" style="margin-top:16px">
         <div class="percent-bar__cat" style="width:${catPercent}%"></div>

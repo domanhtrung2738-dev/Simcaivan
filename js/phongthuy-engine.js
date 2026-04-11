@@ -12,7 +12,7 @@
 function parsePhoneNumber(raw) {
   if (!raw || typeof raw !== 'string') return null;
   const digits = raw.replace(/\D/g, '');
-  if (digits.length < 4 || digits.length > 15) return null;
+  if (digits.length < 4 || digits.length > 20) return null;
   return digits;
 }
 
@@ -341,7 +341,61 @@ function generateLuanGiai(queDichResult, tuTruongList) {
   };
 }
 
-/* ========== PHÂN TÍCH TỔNG HỢP ========== */
+/* ========== PHÂN TÍCH TỔNG HỢP & BẢN MỆNH ========== */
+
+/**
+ * Tính Cung Phi từ năm sinh và giới tính
+ */
+function sumToSingleDigit(num) {
+  let sum = Number(num);
+  while (sum > 9) {
+    sum = String(sum).split('').reduce((a, b) => a + Number(b), 0);
+  }
+  return sum;
+}
+
+function calculatePhiCung(year, gender) {
+  if (!year || isNaN(year)) return null;
+  
+  const sumYear = sumToSingleDigit(year);
+  
+  let namCalc = 11 - sumYear;
+  namCalc = sumToSingleDigit(namCalc);
+  
+  let finalNum;
+  if (gender === 'male') {
+    finalNum = namCalc;
+  } else {
+    finalNum = 15 - namCalc;
+    finalNum = sumToSingleDigit(finalNum);
+  }
+  
+  let cung = LAC_THU_MAP[finalNum]?.name;
+  if (finalNum === 5) {
+    cung = gender === 'male' ? 'Khôn (Trung cung)' : 'Cấn (Trung cung)';
+  }
+
+  return { number: finalNum, cung };
+}
+
+/**
+ * Phân tích riêng cho CCCD (chỉ lấy từ trường)
+ */
+function analyzeCCCD(rawInput) {
+  const digits = parsePhoneNumber(rawInput);
+  if (!digits || digits.length !== 12) return null; // CCCD phải có 12 số
+
+  const tuTruong = analyzeTuTruong(digits);
+  // Không tính quẻ dịch cho CCCD ở phase này, chỉ lấy từ trường
+  const luanGiai = generateLuanGiai({ queChu: null, queBien: null, haoDong: 0 }, tuTruong);
+  
+  return {
+    digits,
+    formatted: `${digits.slice(0,3)} ${digits.slice(3,6)} ${digits.slice(6,9)} ${digits.slice(9)}`,
+    tuTruong,
+    luanGiai
+  };
+}
 
 /**
  * Hàm chính: phân tích đầy đủ 1 số sim

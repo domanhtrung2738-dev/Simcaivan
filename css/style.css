@@ -195,6 +195,11 @@ body::before {
   margin-bottom: 10px;
 }
 
+.input-with-btn {
+  position: relative;
+  display: flex;
+}
+
 .input-phone {
   width: 100%;
   padding: 16px 20px;
@@ -249,6 +254,52 @@ body::before {
 
 .btn-analyze:active {
   transform: translateY(-50%) scale(0.98);
+}
+
+/* Personal Inputs Area */
+.personal-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.input-personal {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  transition: var(--transition);
+  outline: none;
+}
+
+.input-personal:focus {
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.15);
+}
+
+.input-personal::placeholder {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+select.input-personal {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239a9ab0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+}
+
+select.input-personal option {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 /* Batch textarea */
@@ -741,6 +792,11 @@ body::before {
   .input-group {
     display: flex;
     flex-direction: column;
+  }
+
+  .personal-inputs {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .que-display {

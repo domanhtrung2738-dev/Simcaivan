@@ -36,15 +36,35 @@
       <div class="input-section">
         <div class="input-group">
           <label for="input-single">Nhập số điện thoại</label>
-          <input
-            type="text"
-            id="input-single"
-            class="input-phone"
-            placeholder="VD: 0987.654.321"
-            autocomplete="off"
-            maxlength="20"
-          >
-          <button class="btn-analyze" id="btn-single">Phân tích</button>
+          <div class="input-with-btn">
+            <input
+              type="text"
+              id="input-single"
+              class="input-phone"
+              placeholder="VD: 0987.654.321"
+              autocomplete="off"
+              maxlength="20"
+            >
+            <button class="btn-analyze" id="btn-single">Phân tích</button>
+          </div>
+        </div>
+
+        <div class="personal-inputs">
+          <div class="input-group">
+            <label for="input-year">Năm Sinh</label>
+            <input type="number" id="input-year" class="input-personal" placeholder="VD: 1990" min="1900" max="2100">
+          </div>
+          <div class="input-group">
+            <label for="input-gender">Giới Tính</label>
+            <select id="input-gender" class="input-personal">
+              <option value="male">Nam</option>
+              <option value="female">Nữ</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="input-cccd">CCCD / CMND (Tùy chọn)</label>
+            <input type="text" id="input-cccd" class="input-personal" placeholder="12 chữ số" maxlength="12">
+          </div>
         </div>
       </div>
 
