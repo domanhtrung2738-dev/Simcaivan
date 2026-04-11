@@ -214,7 +214,7 @@ function renderQueDichCard(q) {
           <div class="que-item__label">Quẻ Chủ</div>
           <div class="que-item__unicode">${queChu.unicode}</div>
           ${renderHaoViz(haoArray, haoDong)}
-          <div class="que-item__name">${queChu.name}</div>
+          <div class="que-item__name" style="color: ${getQueColor(queChu.name)}">${queChu.name}</div>
           <div class="que-item__info">${ngoaiQuai.symbol} ${ngoaiQuai.name} / ${noiQuai.symbol} ${noiQuai.name}</div>
           ${hopCauChu.length ? `<div class="hop-cau-badges">${hopCauChu.map(h => `<span class="hop-cau-badge">✨ ${h}</span>`).join('')}</div>` : ''}
         </div>
@@ -230,7 +230,7 @@ function renderQueDichCard(q) {
           <div class="que-item__label">Quẻ Biến</div>
           <div class="que-item__unicode">${queBien.unicode}</div>
           ${renderHaoViz(haoBienArray, -1)}
-          <div class="que-item__name">${queBien.name}</div>
+          <div class="que-item__name" style="color: ${getQueColor(queBien.name)}">${queBien.name}</div>
           <div class="que-item__info">${TIEN_THIEN_MAP[QUAI_NAME_TO_NUM[q.bienNgoaiName]].symbol} ${q.bienNgoaiName} / ${TIEN_THIEN_MAP[QUAI_NAME_TO_NUM[q.bienNoiName]].symbol} ${q.bienNoiName}</div>
           ${hopCauBien.length ? `<div class="hop-cau-badges">${hopCauBien.map(h => `<span class="hop-cau-badge">✨ ${h}</span>`).join('')}</div>` : ''}
         </div>

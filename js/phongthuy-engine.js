@@ -310,8 +310,13 @@ function checkQueHopCau(queName) {
   if (!queName) return result;
   for (const [category, queList] of Object.entries(QUE_HOP_CAU)) {
     if (queList.includes(queName)) {
-      const labels = { tai: 'Cầu Tài', quan: 'Cầu Quan', sucKhoe: 'Cầu Sức Khỏe', hoc: 'Cầu Học' };
-      result.push(labels[category]);
+      const labels = { 
+        tai: 'Cầu Tài', 
+        quanHoc: 'Cầu Học/Quan', 
+        sucKhoe: 'Cầu Sức Khỏe', 
+        xau: 'Xấu (Nên tránh)' 
+      };
+      if (labels[category]) result.push(labels[category]);
     }
   }
   return result;
