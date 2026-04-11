@@ -26,11 +26,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const ttHtml = renderTuTruong(query);
     if (ttHtml) html += `<div class="book-chapter"><h2 class="book-chapter-title">🧲 Từ Trường (Bát Cực Linh Số)</h2><div class="book-grid">${ttHtml}</div></div>`;
 
-    // 2. Quẻ Dịch
+    // 2. Phối hợp từ trường
+    const phHtml = renderPhoiHop(query);
+    if (phHtml) html += `<div class="book-chapter"><h2 class="book-chapter-title">🔗 Sự Phối Hợp Giữa Các Từ Trường</h2><div class="book-grid">${phHtml}</div></div>`;
+
+    // 3. Quẻ Dịch
     const queHtml = renderQueDich(query);
     if (queHtml) html += `<div class="book-chapter"><h2 class="book-chapter-title">☰ 64 Quẻ Dịch</h2><div class="book-grid">${queHtml}</div></div>`;
 
-    // 3. Tiên Thiên Bát Quái
+    // 4. Tiên Thiên Bát Quái
     const quaiHtml = renderBatQuai(query);
     if (quaiHtml) html += `<div class="book-chapter"><h2 class="book-chapter-title">☯ Tiên Thiên Bát Quái</h2><div class="book-grid">${quaiHtml}</div></div>`;
 
@@ -82,6 +86,40 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
     }).join('');
+  }
+
+  function renderPhoiHop(query) {
+    if (typeof TU_TRUONG_PHOI_HOP === 'undefined') return '';
+    let html = '';
+    
+    Object.entries(TU_TRUONG_PHOI_HOP).forEach(([goc, phoiHopObj]) => {
+      let contentHtml = '';
+      Object.entries(phoiHopObj).forEach(([phu, meanning]) => {
+         if (!query || goc.toLowerCase().includes(query) || phu.toLowerCase().includes(query) || meanning.toLowerCase().includes(query)) {
+            const isCat = ['Sinh Khí', 'Diên Niên', 'Thiên Y', 'Phục Vị'].includes(phu);
+            const badgeColor = isCat ? 'var(--color-cat)' : 'var(--color-hung)';
+            contentHtml += `<p style="margin-bottom:8px">
+              <strong style="color:var(--accent-blue)">+ ${phu}</strong>: 
+              <span style="color: ${badgeColor}">${meanning}</span>
+            </p>`;
+         }
+      });
+      
+      if (contentHtml) {
+         html += `
+          <div class="book-card" style="border-left: 3px solid var(--accent-blue)">
+            <div class="book-card__header">
+              <div class="book-card__title">Gốc: ${goc}</div>
+            </div>
+            <div class="book-card__content">
+              ${contentHtml}
+            </div>
+          </div>
+         `;
+      }
+    });
+
+    return html;
   }
 
   function renderQueDich(query) {
