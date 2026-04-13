@@ -78,18 +78,53 @@ function syncSupabaseToSheet() {
       sheet.getRange(1, 1, 1, 8).setFontWeight("bold").setBackground("#f3f3f3");
     }
 
-    // Xóa toàn bộ dữ liệu cũ (trừ dòng Header số 1)
-    if (sheet.getLastRow() > 1) {
-      sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn()).clearContent();
+    // Đọc dữ liệu hiện tại từ Sheet
+    const lastRow = sheet.getLastRow();
+    const lastCol = sheet.getLastColumn() < 8 ? 8 : sheet.getLastColumn();
+    let currentData = [];
+    if (lastRow > 1) {
+      currentData = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
     }
 
-    // 3. Đổ dữ liệu mới vào
-    const rows = [];
+    // Map dữ liệu từ Supabase để dễ tìm kiếm
+    const supabaseMap = new Map();
+    data.forEach(r => supabaseMap.set(String(r.id), r));
+
+    const finalRows = [];
+    const deletedIndices = [];
     const now = new Date().toLocaleString("vi-VN");
 
-    for (let i = 0; i < data.length; i++) {
-      const row = data[i];
-      rows.push([
+    // Xử lý các dòng đã có trong Sheet (Giữ nguyên vị trí)
+    for (let i = 0; i < currentData.length; i++) {
+      const sheetRow = currentData[i];
+      const id = String(sheetRow[0]);
+      
+      if (!id) continue;
+      
+      if (supabaseMap.has(id)) {
+        // Sim vẫn còn tồn tại -> Cập nhật thông tin mới nhất
+        const row = supabaseMap.get(id);
+        finalRows.push([
+          row.id || '',
+          row.phone_number || '',
+          row.price || '',
+          row.carrier || '',
+          row.tags || '',
+          row.sim_que || '',
+          row.created_at || '',
+          now 
+        ]);
+        supabaseMap.delete(id); // Đánh dấu đã xử lý xong
+      } else {
+        // Sim ĐÃ BỊ XÓA trên Web -> Giữ lại dòng cũ trên Sheet và gạch ngang
+        finalRows.push(sheetRow); 
+        deletedIndices.push(finalRows.length - 1); // 0-based index
+      }
+    }
+
+    // Xử lý các Sim MỚI THÊM vào Supabase chưa có ở Sheet
+    supabaseMap.forEach((row, id) => {
+      finalRows.push([
         row.id || '',
         row.phone_number || '',
         row.price || '',
@@ -97,16 +132,35 @@ function syncSupabaseToSheet() {
         row.tags || '',
         row.sim_que || '',
         row.created_at || '',
-        now // Đóng dấu thời gian backup cuối
+        now
       ]);
-    }
+    });
 
-    // Ghi nhiều dòng cùng lúc siêu tốc độ
-    if (rows.length > 0) {
-      sheet.getRange(2, 1, rows.length, rows[0].length).setValues(rows);
+    if (finalRows.length > 0) {
+      // 3. Xóa data cũ và đổ data mới
+      if (lastRow > 1) {
+        sheet.getRange(2, 1, lastRow - 1, lastCol).clearContent();
+        sheet.getRange(2, 1, lastRow - 1, lastCol).setFontLine("none").setFontColor("black"); // Xóa gạch ngang cũ
+      }
+      
+      sheet.getRange(2, 1, finalRows.length, 8).setValues(finalRows);
+      
+      // 4. Kẻ vạch ngang cho các Sim đã bị xóa
+      if (deletedIndices.length > 0) {
+        const rangesToStrike = [];
+        deletedIndices.forEach(idx => {
+          const rowIndex = idx + 2; // +1 vì header, +1 vì index bắt đầu từ 0
+          rangesToStrike.push(`A${rowIndex}:H${rowIndex}`);
+        });
+        
+        // Dùng RangeList để chỉnh CSS định dạng hàng loạt siêu nhanh
+        const rangeList = sheet.getRangeList(rangesToStrike);
+        rangeList.setFontLine("line-through");
+        rangeList.setFontColor("#b0bec5"); // Bôi xám cho mờ đi
+      }
     }
     
-    Logger.log(`Đã backup thành công ${rows.length} số sim vào lúc ${now}`);
+    Logger.log(`Đã backup thành công ${finalRows.length} số sim. Trong đó có ${deletedIndices.length} số đã bán/xóa.`);
 
   } catch (e) {
     Logger.log("Đã xảy ra lỗi hệ thống cục bộ: " + e.message);
