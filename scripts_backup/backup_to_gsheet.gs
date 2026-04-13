@@ -26,6 +26,16 @@ const SUPABASE_KEY = 'sb_publishable_XrTybfIlazMYUqXXqzQ_CA_rnQgQCaq';
 const SHEET_NAME = 'KhoSim_Backup'; 
 // Tên Tab Sheet dùng để lưu dữ liệu
 
+/**
+ * Tự động tạo Menu khi mở Google Sheets
+ */
+function onOpen() {
+  const ui = SpreadsheetApp.getUi();
+  ui.createMenu('💎 KHO SIM VVIP')
+    .addItem('⬇️ Kéo dữ liệu mới nhất từ Supabase', 'syncSupabaseToSheet')
+    .addToUi();
+}
+
 function syncSupabaseToSheet() {
   const table = 'sim_vvip';
   const url = `${SUPABASE_URL}/rest/v1/${table}?select=*`;
