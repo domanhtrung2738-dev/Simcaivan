@@ -96,23 +96,22 @@ function evaluateSimCompatibility(userPhiCung, queDichResult, luanGiai) {
 
 function analyzeCCCD(rawInput) {
   const digits = parsePhoneNumber(rawInput);
-  if (!digits || digits.length !== 12) return null;
+  if (!digits || digits.length < 8) return null; // Hỗ trợ cả CMND (9 số) và CCCD (12 số)
 
   const tuTruong = analyzeTuTruong(digits);
   const luanGiai = generateLuanGiai({ queChu: null, queBien: null, haoDong: 0 }, tuTruong);
+  
+  let formatted = digits;
+  if (digits.length === 12) {
+    formatted = `${digits.slice(0,3)} ${digits.slice(3,6)} ${digits.slice(6,9)} ${digits.slice(9)}`;
+  } else if (digits.length === 9) {
+    formatted = `${digits.slice(0,3)} ${digits.slice(3,6)} ${digits.slice(6,9)}`;
+  }
 
   return {
     digits,
-    formatted: `${digits.slice(0,3)} ${digits.slice(3,6)} ${digits.slice(6,9)} ${digits.slice(9)}`,
+    formatted,
     tuTruong,
     luanGiai
   };
-}
-
-function analyzeCCCDWithPersonalFit(rawInput, userPhiCung, queDichResult, luanGiai) {
-  const cccdResult = analyzeCCCD(rawInput);
-  if (!cccdResult) return null;
-
-  cccdResult.personalFit = evaluateSimCompatibility(userPhiCung, queDichResult, luanGiai);
-  return cccdResult;
 }

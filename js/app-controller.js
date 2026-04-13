@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (cccd) {
-      result.cccdResult = analyzeCCCDWithPersonalFit(cccd, result.userPhiCung, result.queDich, result.luanGiai);
+      result.cccdResult = analyzeCCCD(cccd);
     }
 
     const priceParam = inputSingle.dataset.price;
