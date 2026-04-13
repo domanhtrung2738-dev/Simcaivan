@@ -178,7 +178,7 @@ window.saveCurrentSim = async function(phone, carrier, que) {
 
 window.saveBatchSim = async function(phone, carrier, que, defaultPrice) {
   if (!phone) return;
-  const cleanInt = String(defaultPrice || '').replace(/[^\\d]/g, '');
+  const cleanInt = String(defaultPrice || '').replace(/[^0-9]/g, '');
   const priceInt = cleanInt ? parseInt(cleanInt, 10) : null;
   
   await doInsertVvip({
