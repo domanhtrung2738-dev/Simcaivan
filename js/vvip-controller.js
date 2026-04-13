@@ -155,27 +155,19 @@ function formatPhone(p) {
   return p;
 }
 
-// Logic Lưu một thẻ sim từ màn hình phân tích
+// Logic Lưu một thẻ sim từ màn hình phân tích trực tiếp (Không hỏi han)
 window.saveCurrentSim = async function(phone, carrier, que) {
   if (!phone) {
     alert('Vui lòng phân tích số điện thoại trước khi lưu!');
     return;
   }
   
-  let priceStr = prompt('Nhập giá sim (VNĐ). Mặc định là Liên hệ nếu để trống:', '');
-  if (priceStr === null) return; // Bấm Cancel
-  
-  let tagsStr = prompt('Nhập Tag nổi bật (cách nhau bởi dấu phẩy, vd: Sinh Khí, Lộc Phát):', '');
-  if (tagsStr === null) return; 
-
-  const priceInt = parseInt(priceStr.replace(/\\D/g, ''), 10) || null;
-  
   await doInsertVvip({
     phone_number: phone,
     carrier: carrier,
     sim_que: que,
-    price: priceInt,
-    tags: tagsStr
+    price: null,
+    tags: ""
   });
 };
 
@@ -183,15 +175,12 @@ window.saveBatchSim = async function(phone, carrier, que, defaultPrice) {
   if (!phone) return;
   const priceInt = parseInt(String(defaultPrice).replace(/\\D/g, ''), 10) || null;
   
-  let tagsStr = prompt('Xác nhận Tag đặc biệt (nếu có):', '');
-  if (tagsStr === null) return;
-
   await doInsertVvip({
     phone_number: phone,
     carrier: carrier,
     sim_que: que,
     price: priceInt,
-    tags: tagsStr
+    tags: ""
   });
 };
 
