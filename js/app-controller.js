@@ -55,6 +55,13 @@ document.addEventListener('DOMContentLoaded', () => {
       result.cccdResult = analyzeCCCDWithPersonalFit(cccd, result.userPhiCung, result.queDich, result.luanGiai);
     }
 
+    const priceParam = inputSingle.dataset.price;
+    if (priceParam) {
+      result.price = priceParam;
+      // Xóa dataset để không bị dính giá cũ khi Sếp tự gõ số mới tay
+      inputSingle.dataset.price = '';
+    }
+
     resultSingle.innerHTML = renderSingleResult(result);
   }
 
@@ -91,7 +98,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.phone-cell').forEach(cell => {
       cell.addEventListener('click', () => {
         const phone = cell.dataset.phone;
+        const price = cell.dataset.price;
         if (phone) {
+          if (price) inputSingle.dataset.price = price;
           inputSingle.value = phone;
           tabBtns[0].click();
           runSingleAnalysis();

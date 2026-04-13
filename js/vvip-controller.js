@@ -99,7 +99,7 @@ function renderVVIPList(data) {
     const formatPrice = formatVND(sim.price);
     
     html += `
-      <div class="vvip-card" onclick="analyzeVvipSim('${sim.phone_number}')">
+      <div class="vvip-card" onclick="analyzeVvipSim('${sim.phone_number}', '${formatPrice}')">
         <button class="btn-delete-vvip" onclick="deleteSimFromVvip(${sim.id}, event)" title="Xóa thẻ sim này">🗑</button>
         <div class="vvip-card__header">
           <div class="vvip-phone">${formatPhone(sim.phone_number)}</div>
@@ -132,7 +132,7 @@ function filterVVIPList(carrier) {
 }
 
 // Logic hook nhảy sang Tab phân tích 1 số
-function analyzeVvipSim(phoneNumber) {
+function analyzeVvipSim(phoneNumber, priceLabel) {
   const btnSingle = document.getElementById('tab-btn-single');
   if (btnSingle) btnSingle.click();
 
@@ -140,6 +140,7 @@ function analyzeVvipSim(phoneNumber) {
   const btnAnalyzeSingle = document.getElementById('btn-single');
   
   if (inputSingle && btnAnalyzeSingle) {
+    if (priceLabel) inputSingle.dataset.price = priceLabel;
     inputSingle.value = phoneNumber;
     btnAnalyzeSingle.click();
     window.scrollTo({ top: 0, behavior: 'smooth' });

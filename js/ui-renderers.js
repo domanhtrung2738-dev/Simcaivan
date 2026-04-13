@@ -38,6 +38,7 @@ function renderSingleResult(r) {
 
     <div class="phone-display" style="position:relative;">
       <div class="phone-display__number">${formatted}</div>
+      ${r.price ? `<div style="font-size: 1.2rem; color: var(--color-cat); font-weight: 700; margin: 4px 0 8px;">Giá: ${r.price}</div>` : ''}
       <div class="phone-display__carrier">📱 ${nhaMang}</div>
       <button class="btn-save-fab" onclick="window.saveCurrentSim('${digits}', '${nhaMang}', '${queDich?.queChu?.name || ''}')" title="Lưu vào kho VVIP">
         <span style="font-size:1.2rem">💾</span> <span>Lưu VVIP</span>
@@ -225,7 +226,7 @@ function renderBatchResult(analyzed) {
       <tr>
         <td class="checkbox-cell" onclick="event.stopPropagation()"><input type="checkbox"></td>
         <td>${idx + 1}</td>
-        <td class="phone-cell" data-phone="${r.digits}">${r.formatted}</td>
+        <td class="phone-cell" data-phone="${r.digits}" data-price="${item.price || ''}">${r.formatted}</td>
         <td class="tt-cell">${ttTags}</td>
         <td class="que-cell" style="color: ${chuColor}; font-weight: bold;">${r.queDich.queChu?.name || '—'}</td>
         <td class="que-cell" style="color: ${bienColor}; font-weight: bold;">${r.queDich.queBien?.name || '—'}</td>
