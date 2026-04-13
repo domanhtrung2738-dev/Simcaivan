@@ -17,11 +17,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const filterSelect = document.getElementById('vvip-filter-carrier');
+  const searchInput = document.getElementById('vvip-search-input');
+
+  const triggerFilter = () => {
+    filterVVIPList();
+  };
+
   if(filterSelect) {
-    filterSelect.addEventListener('change', (e) => {
-      const activeCarrier = e.target.value;
-      filterVVIPList(activeCarrier);
-    });
+    filterSelect.addEventListener('change', triggerFilter);
+  }
+  if(searchInput) {
+    searchInput.addEventListener('input', triggerFilter);
   }
 });
 
@@ -122,12 +128,23 @@ function renderVVIPList(data) {
   container.innerHTML = html;
 }
 
-function filterVVIPList(carrier) {
-  if (!carrier) {
-    renderVVIPList(allVipData);
-    return;
+function filterVVIPList() {
+  const carrier = document.getElementById('vvip-filter-carrier')?.value || '';
+  const search = document.getElementById('vvip-search-input')?.value.trim().toLowerCase() || '';
+
+  let filtered = allVipData;
+  if (carrier) {
+    filtered = filtered.filter(s => s.carrier === carrier);
   }
-  const filtered = allVipData.filter(s => s.carrier === carrier);
+  if (search) {
+    filtered = filtered.filter(s => 
+      (s.phone_number?.toLowerCase().includes(search)) || 
+      (s.tags?.toLowerCase().includes(search)) ||
+      (s.sim_que?.toLowerCase().includes(search))
+    );
+  }
+  
+  // Hiển thị ra giao diện
   renderVVIPList(filtered);
 }
 
