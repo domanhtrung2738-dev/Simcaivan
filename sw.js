@@ -1,4 +1,4 @@
-const CACHE_NAME = 'simcaivan-v2';
+const CACHE_NAME = 'simcaivan-v3';
 const ASSETS = [
   '/',
   '/index.html',
