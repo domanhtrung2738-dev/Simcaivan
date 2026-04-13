@@ -83,6 +83,26 @@ async function loadVVIPData() {
     }
 
     allVipData = data;
+    
+    // Tự động phân tích và tạo options động
+    const filterSelect = document.getElementById('vvip-filter-carrier');
+    if (filterSelect) {
+      const carriersFromDB = [...new Set(allVipData.map(s => s.carrier).filter(Boolean))];
+      const allCarriers = new Set(['Viettel', 'Vinaphone', 'Mobifone', 'Wintel']);
+      carriersFromDB.forEach(c => {
+         const capitalized = c.trim().charAt(0).toUpperCase() + c.trim().slice(1).toLowerCase();
+         allCarriers.add(capitalized);
+      });
+      
+      const currentVal = filterSelect.value;
+      let optHtml = '<option value="">Tất cả mạng</option>';
+      Array.from(allCarriers).forEach(c => {
+        optHtml += `<option value="${c}">${c}</option>`;
+      });
+      filterSelect.innerHTML = optHtml;
+      filterSelect.value = currentVal;
+    }
+
     renderVVIPList(allVipData);
   } catch (err) {
     console.error('Lỗi khi tải Supabase:', err);
@@ -104,6 +124,28 @@ function renderVVIPList(data) {
     const tags = sim.tags ? sim.tags.split(',').map(t => `<span class="vvip-tag-chip">${t.trim()}</span>`).join('') : '';
     const formatPrice = formatVND(sim.price);
     
+    let queChuName = sim.sim_que || '—';
+    let queBienName = '';
+    
+    // Auto calculate Quẻ Biến 
+    if (typeof analyzeSim === 'function' && sim.phone_number) {
+       const res = analyzeSim(sim.phone_number);
+       if (res && res.queDich) {
+          queChuName = res.queDich.queChu?.name || queChuName;
+          queBienName = res.queDich.queBien?.name || '';
+       }
+    }
+    
+    let queHtml = '';
+    if (queChuName && queChuName !== '—') {
+      const colorChu = typeof getQueColor === 'function' ? getQueColor(queChuName) : 'inherit';
+      queHtml += `<div>☯️ Quẻ chủ: <strong style="color: ${colorChu}">${queChuName}</strong></div>`;
+    }
+    if (queBienName && queBienName !== '—') {
+      const colorBien = typeof getQueColor === 'function' ? getQueColor(queBienName) : 'inherit';
+      queHtml += `<div style="margin-top:4px;">🔄 Quẻ biến: <strong style="color: ${colorBien}">${queBienName}</strong></div>`;
+    }
+
     html += `
       <div class="vvip-card" onclick="analyzeVvipSim('${sim.phone_number}', '${formatPrice}')">
         <button class="btn-delete-vvip" onclick="deleteSimFromVvip(${sim.id}, event)" title="Xóa thẻ sim này">🗑</button>
@@ -116,7 +158,7 @@ function renderVVIPList(data) {
             <span class="vvip-tag-chip carrier-chip">${sim.carrier || 'KXD'}</span>
             ${tags}
           </div>
-          ${sim.sim_que ? `<div class="vvip-que">☯️ Quẻ chủ: <strong>${sim.sim_que}</strong></div>` : ''}
+          ${queHtml ? `<div class="vvip-que">${queHtml}</div>` : ''}
         </div>
         <div class="vvip-card__footer">
           <button class="btn-analyze-vvip">Lý giải chi tiết ➞</button>
