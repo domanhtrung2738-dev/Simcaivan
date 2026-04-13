@@ -36,9 +36,12 @@ function renderSingleResult(r) {
   return `
     ${userHtml}
 
-    <div class="phone-display">
+    <div class="phone-display" style="position:relative;">
       <div class="phone-display__number">${formatted}</div>
       <div class="phone-display__carrier">📱 ${nhaMang}</div>
+      <button class="btn-save-fab" onclick="window.saveCurrentSim('${digits}', '${nhaMang}', '${queDich?.queChu?.name || ''}')" title="Lưu vào kho VVIP">
+        <span style="font-size:1.2rem">💾</span> <span>Lưu VVIP</span>
+      </button>
     </div>
 
     ${fitHtml}
@@ -229,6 +232,7 @@ function renderBatchResult(analyzed) {
         <td>${item.price || '—'}</td>
         <td>${item.carrier || r.nhaMang}</td>
         <td>${r.luanGiai.catPercent}%</td>
+        <td><button class="btn-save-icon" onclick="window.saveBatchSim('${r.digits}', '${item.carrier || r.nhaMang}', '${r.queDich.queChu?.name || ''}', '${item.price || ''}')" title="Lưu số này">💾</button></td>
       </tr>`;
   });
 
@@ -247,6 +251,7 @@ function renderBatchResult(analyzed) {
             <th>Giá</th>
             <th>Nhà mạng</th>
             <th>Cát %</th>
+            <th>Lưu</th>
           </tr>
         </thead>
         <tbody>${rows}</tbody>

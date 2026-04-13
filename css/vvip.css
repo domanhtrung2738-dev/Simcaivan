@@ -19,3 +19,12 @@
 .vvip-card:hover .btn-analyze-vvip { background: linear-gradient(135deg, var(--accent-gold), var(--accent-amber)); color: var(--bg-primary); }
 .rotating { animation: spin 1.5s linear infinite; display: inline-block; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* Save/Delete Action Buttons */
+.btn-save-fab { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: rgba(0, 230, 118, 0.15); border: 1px solid rgba(0, 230, 118, 0.3); color: var(--color-cat); padding: 8px 14px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
+.btn-save-fab:hover { background: rgba(0, 230, 118, 0.25); transform: translateY(-50%) scale(1.05); }
+.btn-save-icon { background: rgba(0, 230, 118, 0.1); border: 1px solid rgba(0, 230, 118, 0.3); color: var(--color-cat); font-size: 1rem; border-radius: 4px; padding: 4px 8px; cursor: pointer; transition: 0.2s; }
+.btn-save-icon:hover { background: rgba(0, 230, 118, 0.3); transform: scale(1.1); }
+.btn-delete-vvip { position: absolute; top: 10px; right: 10px; background: rgba(255, 23, 68, 0.1); border: 1px solid rgba(255, 23, 68, 0.2); outline: none; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-hung); font-size: 0.9rem; transition: 0.2s; z-index: 10; opacity: 0; }
+.vvip-card:hover .btn-delete-vvip { opacity: 1; }
+.btn-delete-vvip:hover { background: var(--color-hung); color: #fff; transform: scale(1.1); }

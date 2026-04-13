@@ -95,6 +95,7 @@ function renderVVIPList(data) {
     
     html += `
       <div class="vvip-card" onclick="analyzeVvipSim('${sim.phone_number}')">
+        <button class="btn-delete-vvip" onclick="deleteSimFromVvip(${sim.id}, event)" title="Xóa thẻ sim này">🗑</button>
         <div class="vvip-card__header">
           <div class="vvip-phone">${formatPhone(sim.phone_number)}</div>
           <div class="vvip-price">${formatPrice}</div>
@@ -153,3 +154,79 @@ function formatPhone(p) {
   }
   return p;
 }
+
+// Logic Lưu một thẻ sim từ màn hình phân tích
+window.saveCurrentSim = async function(phone, carrier, que) {
+  if (!phone) {
+    alert('Vui lòng phân tích số điện thoại trước khi lưu!');
+    return;
+  }
+  
+  let priceStr = prompt('Nhập giá sim (VNĐ). Mặc định là Liên hệ nếu để trống:', '');
+  if (priceStr === null) return; // Bấm Cancel
+  
+  let tagsStr = prompt('Nhập Tag nổi bật (cách nhau bởi dấu phẩy, vd: Sinh Khí, Lộc Phát):', '');
+  if (tagsStr === null) return; 
+
+  const priceInt = parseInt(priceStr.replace(/\\D/g, ''), 10) || null;
+  
+  await doInsertVvip({
+    phone_number: phone,
+    carrier: carrier,
+    sim_que: que,
+    price: priceInt,
+    tags: tagsStr
+  });
+};
+
+window.saveBatchSim = async function(phone, carrier, que, defaultPrice) {
+  if (!phone) return;
+  const priceInt = parseInt(String(defaultPrice).replace(/\\D/g, ''), 10) || null;
+  
+  let tagsStr = prompt('Xác nhận Tag đặc biệt (nếu có):', '');
+  if (tagsStr === null) return;
+
+  await doInsertVvip({
+    phone_number: phone,
+    carrier: carrier,
+    sim_que: que,
+    price: priceInt,
+    tags: tagsStr
+  });
+};
+
+async function doInsertVvip(data) {
+  if (!window.SupabaseClient) {
+    alert('Chưa cấu hình Supabase! Vui lòng kiểm tra file supabase-config.js');
+    return;
+  }
+  
+  try {
+    const { error } = await window.SupabaseClient.from('sim_vvip').insert([data]);
+    if (error) throw error;
+    
+    alert('✅ Đã lưu thẻ sim thành công vào Kho VVIP!');
+    
+    // Tự động reload lại tab nếu đang mở
+    if (window.vvipLoaded) {
+      loadVVIPData();
+    }
+  } catch(e) {
+    alert('❌ Lỗi khi lưu: ' + e.message);
+  }
+}
+
+window.deleteSimFromVvip = async function(id, event) {
+  event.stopPropagation(); // Không kích hoạt nhảy trang phân tích
+  if (!confirm('Bạn có chắc chắn muốn xóa thẻ sim này khỏi kho VVIP không?')) return;
+  
+  try {
+    const { error } = await window.SupabaseClient.from('sim_vvip').delete().eq('id', id);
+    if (error) throw error;
+    
+    // Reload lại UI
+    loadVVIPData();
+  } catch(e) {
+    alert('❌ Lỗi khi xóa: ' + e.message);
+  }
+};
