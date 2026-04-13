@@ -9,6 +9,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☰</text></svg>">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/vvip.css">
 </head>
 <body>
   <div class="container">
@@ -34,6 +35,10 @@
       <button class="tab-btn" data-tab="tab-book" role="tab" id="tab-btn-book">
         <span class="tab-btn__icon">📖</span>
         <span>Sách Tra Cứu</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-vvip" role="tab" id="tab-btn-vvip">
+        <span class="tab-btn__icon">💎</span>
+        <span>Kho Sim VVIP</span>
       </button>
     </nav>
 
@@ -109,6 +114,31 @@
       </div>
     </section>
 
+    <!-- Tab: VVIP List -->
+    <section class="tab-content" id="tab-vvip" role="tabpanel">
+      <div class="vvip-header">
+        <div class="vvip-header__title">
+          <span>💎</span> Kho Số Đẹp VVIP
+        </div>
+        <div class="vvip-filters">
+          <select id="vvip-filter-carrier" class="input-personal" style="min-width: 130px; font-size: 0.9rem; padding: 6px 10px;">
+            <option value="">Tất cả mạng</option>
+            <option value="Viettel">Viettel</option>
+            <option value="Vinaphone">Vinaphone</option>
+            <option value="Mobifone">Mobifone</option>
+            <option value="Wintel">Wintel</option>
+          </select>
+        </div>
+      </div>
+      
+      <div id="vvip-container" class="vvip-container">
+        <div class="empty-state">
+           <div class="empty-state__icon">⏳</div>
+           <div class="empty-state__text">Đang tải danh sách sim...</div>
+        </div>
+      </div>
+    </section>
+
     <!-- Tab: Knowledge Book -->
     <section class="tab-content" id="tab-book" role="tabpanel">
       <!-- Search bar -->
@@ -121,6 +151,9 @@
     </section>
   </div>
 
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <!-- Scripts: data → modules → renderers → controller → book -->
   <script src="js/queDich-data.js"></script>
   <script src="js/core-parse.js"></script>
@@ -131,6 +164,8 @@
   <script src="js/ui-renderers.js"></script>
   <script src="js/app-controller.js"></script>
   <script src="js/book-loader.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/vvip-controller.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
