@@ -1,115 +1,8 @@
 /**
  * ============================================================
- *  Sim Cài Vận – App UI Logic
+ *  Sim Cài Vận – UI Renderers
  * ============================================================
  */
-
-document.addEventListener('DOMContentLoaded', () => {
-  /* ===== Tab Switching ===== */
-  const tabBtns = document.querySelectorAll('.tab-btn');
-  const tabContents = document.querySelectorAll('.tab-content');
-
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = btn.dataset.tab;
-      tabBtns.forEach(b => b.classList.remove('active'));
-      tabContents.forEach(c => c.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById(target).classList.add('active');
-    });
-  });
-
-  /* ===== Single Analysis ===== */
-  const inputSingle = document.getElementById('input-single');
-  const btnSingle = document.getElementById('btn-single');
-  const resultSingle = document.getElementById('result-single');
-
-  const inputYear = document.getElementById('input-year');
-  const inputGender = document.getElementById('input-gender');
-  const inputCCCD = document.getElementById('input-cccd');
-
-  function runSingleAnalysis() {
-    const raw = inputSingle.value.trim();
-    if (!raw) return;
-
-    const result = analyzeSim(raw);
-    if (result.error) {
-      resultSingle.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-state__icon">⚠️</div>
-          <div class="empty-state__text">${result.error}</div>
-        </div>`;
-      return;
-    }
-
-    // Lấy thông tin cá nhân bổ sung
-    const year = inputYear.value.trim();
-    const gender = inputGender.value;
-    const cccd = inputCCCD.value.trim();
-
-    if (year) {
-      result.userPhiCung = calculatePhiCung(year, gender);
-    }
-    
-    if (result.userPhiCung) {
-      result.personalFit = evaluateSimCompatibility(result.userPhiCung, result.queDich, result.luanGiai);
-    }
-
-    if (cccd) {
-      result.cccdResult = analyzeCCCDWithPersonalFit(cccd, result.userPhiCung, result.queDich, result.luanGiai);
-    }
-
-    resultSingle.innerHTML = renderSingleResult(result);
-  }
-
-  btnSingle.addEventListener('click', runSingleAnalysis);
-  inputSingle.addEventListener('keydown', e => {
-    if (e.key === 'Enter') runSingleAnalysis();
-  });
-
-  /* ===== Batch Analysis ===== */
-  const inputBatch = document.getElementById('input-batch');
-  const btnBatch = document.getElementById('btn-batch');
-  const resultBatch = document.getElementById('result-batch');
-
-  btnBatch.addEventListener('click', () => {
-    const raw = inputBatch.value.trim();
-    if (!raw) return;
-
-    const items = parseBatchInput(raw);
-    if (!items.length) {
-      resultBatch.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-state__icon">📋</div>
-          <div class="empty-state__text">Không tìm thấy số hợp lệ</div>
-        </div>`;
-      return;
-    }
-
-    // Analyze all
-    const analyzed = items.map(item => {
-      const result = analyzeSim(item.digits);
-      return { ...item, result };
-    });
-
-    resultBatch.innerHTML = renderBatchResult(analyzed);
-
-    // Add click handler for phone cells
-    document.querySelectorAll('.phone-cell').forEach(cell => {
-      cell.addEventListener('click', () => {
-        const phone = cell.dataset.phone;
-        if (phone) {
-          inputSingle.value = phone;
-          // Switch to single tab
-          tabBtns[0].click();
-          runSingleAnalysis();
-        }
-      });
-    });
-  });
-});
-
-/* ========== RENDER FUNCTIONS ========== */
 
 function renderSingleResult(r) {
   const { digits, formatted, nhaMang, tuTruong, queDich, luanGiai, userPhiCung, personalFit, cccdResult } = r;
@@ -133,9 +26,7 @@ function renderSingleResult(r) {
 
   let cccdHtml = '';
   if (cccdResult) {
-    // Đổi tham số tiêu đề để dùng lại hàm renderTuTruongCard nhưng thay đổi title
     const cccdTuTruongHtml = renderTuTruongCard(cccdResult.tuTruong, cccdResult.luanGiai, '🪪 Năng Lượng CCCD');
-    // Thay thế số điện thoại bằng CCCD
     cccdHtml = cccdTuTruongHtml.replace(
       '<div class="result-card__title">🪪 Năng Lượng CCCD</div>',
       `<div class="result-card__title">🪪 Từ Trường CCCD (${cccdResult.formatted})</div>`
@@ -143,28 +34,21 @@ function renderSingleResult(r) {
   }
 
   return `
-    <!-- Bản mệnh -->
     ${userHtml}
 
-    <!-- Phone Number Display -->
     <div class="phone-display">
       <div class="phone-display__number">${formatted}</div>
       <div class="phone-display__carrier">📱 ${nhaMang}</div>
     </div>
 
-    <!-- Độ hợp theo bản mệnh -->
     ${fitHtml}
 
-    <!-- Từ trường Sim -->
     ${renderTuTruongCard(tuTruong, luanGiai, '🧲 Từ Trường Năng Lượng')}
 
-    <!-- Từ trường CCCD -->
     ${cccdHtml}
 
-    <!-- Quẻ Dịch -->
     ${renderQueDichCard(queDich)}
 
-    <!-- Luận giải -->
     ${renderLuanGiaiCard(luanGiai)}
   `;
 }
@@ -195,7 +79,7 @@ function renderCompatibilityCard(match) {
 }
 
 function renderTuTruongCard(tuTruong, luanGiai, title = '🧲 Từ Trường Năng Lượng') {
-  const { catPercent, hungPercent, summary } = luanGiai;
+  const { catPercent, hungPercent } = luanGiai;
   const specialPercent = 100 - catPercent - hungPercent;
 
   let tagsHtml = '<div class="tu-truong-flow">';
@@ -246,7 +130,6 @@ function renderQueDichCard(q) {
     <div class="result-card">
       <div class="result-card__title">☰ Quẻ Dịch</div>
       <div class="que-display">
-        <!-- Quẻ Chủ -->
         <div class="que-item">
           <div class="que-item__label">Quẻ Chủ</div>
           <div class="que-item__unicode">${queChu.unicode}</div>
@@ -256,13 +139,11 @@ function renderQueDichCard(q) {
           ${hopCauChu.length ? `<div class="hop-cau-badges">${hopCauChu.map(h => `<span class="hop-cau-badge">✨ ${h}</span>`).join('')}</div>` : ''}
         </div>
 
-        <!-- Arrow -->
         <div class="que-arrow">
           <div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:4px">Hào ${haoDong}</div>
           ➤
         </div>
 
-        <!-- Quẻ Biến -->
         <div class="que-item">
           <div class="que-item__label">Quẻ Biến</div>
           <div class="que-item__unicode">${queBien.unicode}</div>
@@ -281,19 +162,17 @@ function renderQueDichCard(q) {
 
 function renderHaoViz(haoArray, haoDong) {
   let html = '<div class="hao-viz" style="display:flex; flex-direction:column; gap:4px; font-size:14px; margin-top: 20px;">';
-  // Render from top (hào 6) to bottom (hào 1)
   for (let i = 5; i >= 0; i--) {
     const isDong = (i + 1) === haoDong;
     const txt = haoArray[i];
-    
-    // Highlight The/Ung & clean up leading dashes
+
     let displayTxt = txt;
     if (txt && typeof txt === 'string') {
-      displayTxt = displayTxt.replace(/^[\s-]+/, ''); // remove leading "- " or spaces
+      displayTxt = displayTxt.replace(/^[\s-]+/, '');
       displayTxt = displayTxt.replace('(Thế)', '<strong style="color:var(--accent-gold)">(Thế)</strong>')
                              .replace('(Ứng)', '<strong style="color:#2196f3">(Ứng)</strong>');
     }
-    
+
     html += `
       <div class="hao-line" style="display:flex; align-items:center; height: auto; min-height: 28px; opacity: ${isDong ? '1' : '0.85'}; ${isDong ? 'color: var(--accent-gold); font-weight: bold;' : ''}">
         <span class="hao-line__num" style="min-width: 16px; opacity:0.5">${i + 1}</span>
@@ -309,23 +188,22 @@ function renderHaoViz(haoArray, haoDong) {
 function renderLuanGiaiCard(luanGiai) {
   return `
     <div class="result-card">
-      <div class="result-card__title">📜 Luận Giải Sơ Bộ</div>
+      <div class="result-card__title">📝 Luận Giải Sơ Bộ</div>
       <ul class="luan-giai-list">
         ${luanGiai.parts.map(p => `<li class="luan-giai-item">${p}</li>`).join('')}
       </ul>
-    </div>`;
+    </div>
+  `;
 }
 
 function getQueColor(queName) {
   if (!queName || typeof QUE_HOP_CAU === 'undefined') return '#ffffff';
-  if (QUE_HOP_CAU.tai?.includes(queName)) return 'var(--accent-gold)';    // Vàng
-  if (QUE_HOP_CAU.sucKhoe?.includes(queName)) return 'var(--color-cat)'; // Xanh lá
-  if (QUE_HOP_CAU.quanHoc?.includes(queName)) return '#ff9100';          // Cam
-  if (QUE_HOP_CAU.xau?.includes(queName)) return 'var(--color-hung)';    // Đỏ xậm
-  return '#ffffff'; // Bình hòa
+  if (QUE_HOP_CAU.tai?.includes(queName)) return 'var(--accent-gold)';
+  if (QUE_HOP_CAU.sucKhoe?.includes(queName)) return 'var(--color-cat)';
+  if (QUE_HOP_CAU.quanHoc?.includes(queName)) return '#ff9100';
+  if (QUE_HOP_CAU.xau?.includes(queName)) return 'var(--color-hung)';
+  return '#ffffff';
 }
-
-/* ========== BATCH RENDER ========== */
 
 function renderBatchResult(analyzed) {
   let rows = '';

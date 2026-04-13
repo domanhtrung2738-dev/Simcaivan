@@ -459,6 +459,72 @@ function analyzeCCCD(rawInput) {
 }
 
 /**
+ * Đánh giá độ hợp tham khảo giữa sim và bản mệnh cá nhân
+ */
+function evaluateSimCompatibility(userPhiCung, queDichResult, luanGiai) {
+  if (!userPhiCung || !queDichResult) return null;
+
+  const userNum = Number(userPhiCung.number);
+  const { ngoaiNum, noiNum, haoDong, queChu, queBien } = queDichResult;
+  const scoreParts = [];
+  let score = 40;
+
+  if (userNum === ngoaiNum) {
+    score += 30;
+    scoreParts.push('Đồng số với quẻ ngoại');
+  }
+
+  if (userNum === noiNum) {
+    score += 25;
+    scoreParts.push('Đồng số với quẻ nội');
+  }
+
+  if (userNum === haoDong) {
+    score += 10;
+    scoreParts.push('Trùng số với hào động');
+  }
+
+  if (luanGiai && luanGiai.catPercent >= 60) {
+    score += 10;
+    scoreParts.push('Từ trường thiên về cát');
+  } else if (luanGiai && luanGiai.catPercent >= 50) {
+    score += 5;
+    scoreParts.push('Từ trường khá cân bằng');
+  }
+
+  if (queChu && queBien && queChu.name === queBien.name) {
+    score += 5;
+    scoreParts.push('Quẻ chủ và quẻ biến ổn định');
+  }
+
+  score = Math.max(0, Math.min(100, score));
+
+  let level = 'Trung bình';
+  if (score >= 80) level = 'Rất hợp';
+  else if (score >= 65) level = 'Khá hợp';
+  else if (score < 45) level = 'Nên cân nhắc';
+
+  return {
+    score,
+    level,
+    scoreParts,
+    userCung: userPhiCung.cung,
+    simQue: queChu ? queChu.name : '',
+  };
+}
+
+/**
+ * Phân tích CCCD nâng cao: thêm độ hợp theo năm sinh nếu có
+ */
+function analyzeCCCDWithPersonalFit(rawInput, userPhiCung, queDichResult, luanGiai) {
+  const cccdResult = analyzeCCCD(rawInput);
+  if (!cccdResult) return null;
+
+  cccdResult.personalFit = evaluateSimCompatibility(userPhiCung, queDichResult, luanGiai);
+  return cccdResult;
+}
+
+/**
  * Hàm chính: phân tích đầy đủ 1 số sim
  */
 function analyzeSim(rawInput) {

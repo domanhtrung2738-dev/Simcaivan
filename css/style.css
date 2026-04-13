@@ -89,6 +89,7 @@ body::before {
   width: 120px;
   height: auto;
   filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.2));
+  mix-blend-mode: screen;
   animation: float 4s ease-in-out infinite;
 }
 
@@ -769,9 +770,8 @@ select.input-personal option {
   }
 
   .input-phone {
-    font-size: 1rem;
-    padding-right: 16px;
-    padding-bottom: 60px;
+    font-size: 1.1rem;
+    padding: 14px 16px;
     letter-spacing: 1px;
   }
 
