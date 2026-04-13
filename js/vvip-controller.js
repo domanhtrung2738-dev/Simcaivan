@@ -147,7 +147,7 @@ function analyzeVvipSim(phoneNumber) {
 }
 
 function formatVND(n) {
-  if (!n) return 'Liên hệ';
+  if (!n) return '';
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n);
 }
 
@@ -178,7 +178,8 @@ window.saveCurrentSim = async function(phone, carrier, que) {
 
 window.saveBatchSim = async function(phone, carrier, que, defaultPrice) {
   if (!phone) return;
-  const priceInt = parseInt(String(defaultPrice).replace(/\\D/g, ''), 10) || null;
+  const cleanInt = String(defaultPrice || '').replace(/[^\\d]/g, '');
+  const priceInt = cleanInt ? parseInt(cleanInt, 10) : null;
   
   await doInsertVvip({
     phone_number: phone,
