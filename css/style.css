@@ -125,17 +125,9 @@ body::before {
   border-radius: var(--radius-lg);
   padding: 4px;
   margin-bottom: 24px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  white-space: nowrap;
-}
-.tabs::-webkit-scrollbar {
-  display: none;
 }
 
 .tab-btn {
-  flex: 1;
-  flex-shrink: 0;
   padding: 12px 16px;
   background: transparent;
   border: none;
@@ -816,9 +808,19 @@ select.input-personal option {
     text-align: center;
   }
 
+  .tabs {
+    flex-wrap: wrap;
+  }
+
   .tab-btn {
+    flex: 1 1 calc(50% - 4px);
     font-size: 0.78rem;
     padding: 10px 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
   }
 
   .batch-table {
