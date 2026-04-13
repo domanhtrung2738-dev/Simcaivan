@@ -38,6 +38,11 @@ self.addEventListener('activate', event => {
 
 // Stale-while-revalidate strategy for PWA
 self.addEventListener('fetch', event => {
+  // Chỉ cache các request cùng domain (tránh lỗi nghen CDN bên ngoài)
+  if (event.request.method !== 'GET' || !event.request.url.startsWith(self.location.origin)) {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then(cachedResponse => {

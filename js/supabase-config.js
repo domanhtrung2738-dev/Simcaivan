@@ -1,20 +1,12 @@
-/**
- * ============================================================
- *  Sim Cài Vận – Supabase Configuration
- * ============================================================
- */
-
-// Thay thế bằng URL và ANON_KEY từ dự án Supabase của bạn
-const SUPABASE_URL = 'https://zdxeadkxwocgkvumzprk.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_XrTybfIlazMYUqXXqzQ_CA_rnQgQCaq';
+﻿// Thay thế bằng URL và ANON_KEY từ dự án Supabase của bạn
+window.SUPABASE_URL = 'https://zdxeadkxwocgkvumzprk.supabase.co';
+window.SUPABASE_ANON_KEY = 'sb_publishable_XrTybfIlazMYUqXXqzQ_CA_rnQgQCaq';
 
 // Khởi tạo client chỉ khi thư viện supabase đã được nhúng
-let supabase = null;
 if (window.supabase) {
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  window.SupabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
   console.log('Supabase client initialized');
 } else {
-  console.warn('Supabase JS chưa được tải!');
+  console.error('Lỗi: Thư viện Supabase JS chưa được tải. Vui lòng kiểm tra mạng hoặc trình chặn quảng cáo.');
+  window.SupabaseClient = null;
 }
-
-window.SupabaseClient = supabase;

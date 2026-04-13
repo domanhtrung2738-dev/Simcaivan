@@ -10,6 +10,9 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☰</text></svg>">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/vvip.css">
+  
+  <!-- Supabase CDN (Load in head to ensure window.supabase is ready) -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
   <div class="container">
@@ -150,9 +153,6 @@
       <div id="book-container" class="book-container"></div>
     </section>
   </div>
-
-  <!-- Supabase CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- Scripts: data → modules → renderers → controller → book -->
   <script src="js/queDich-data.js"></script>

@@ -29,6 +29,11 @@ let allVipData = [];
 
 async function loadVVIPData() {
   const container = document.getElementById('vvip-container');
+  // Thử khôi phục SupabaseClient nếu thư viện load chậm
+  if (!window.SupabaseClient && window.supabase && window.SUPABASE_URL) {
+    window.SupabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+  }
+
   // Check kết nối Supabase
   if (!window.SupabaseClient || Object.keys(window.SupabaseClient).length === 0 || window.SupabaseClient.supabaseUrl === 'https://XXXX.supabase.co') {
     container.innerHTML = `
@@ -36,7 +41,7 @@ async function loadVVIPData() {
          <div class="empty-state__icon">⚠️</div>
          <div class="empty-state__text" style="color:var(--color-hung)">Chưa kết nối Supabase CSDL</div>
          <div style="font-size:0.85rem;opacity:0.7;margin-top:10px;line-height:1.4">
-            Vui lòng điền URL và API Key vào file <strong>js/supabase-config.js</strong>
+            Vui lòng tải lại trang (F5) hoặc vô hiệu hóa trình chặn quảng cáo bảo mật khắt khe.
          </div>
       </div>
     `;
@@ -185,8 +190,13 @@ window.saveBatchSim = async function(phone, carrier, que, defaultPrice) {
 };
 
 async function doInsertVvip(data) {
+  // Cố gắng tự vá lỗi nếu Supabase load chậm
+  if (!window.SupabaseClient && window.supabase && window.SUPABASE_URL) {
+    window.SupabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+  }
+
   if (!window.SupabaseClient) {
-    alert('Chưa cấu hình Supabase! Vui lòng kiểm tra file supabase-config.js');
+    alert('⚠️ Lỗi: Không thể kết nối với kho dữ liệu (Supabase chưa tải xong).\nMẹo: Vui lòng F5 tải lại trang hoặc thử tắt các ứng dụng chặn quảng cáo (AdBlock)!');
     return;
   }
   
