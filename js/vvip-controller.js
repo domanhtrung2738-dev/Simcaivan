@@ -221,30 +221,56 @@ function formatPhone(p) {
 }
 
 // Logic Lưu một thẻ sim từ màn hình phân tích trực tiếp (Không hỏi han)
-window.saveCurrentSim = async function(phone, carrier, que) {
+window.saveCurrentSim = async function(phone) {
   if (!phone) {
     alert('Vui lòng phân tích số điện thoại trước khi lưu!');
     return;
   }
   
+  const simData = window.lastAnalyzedSingle;
+  if (!simData || simData.digits !== phone) return;
+
+  const tuTruongChinh = (simData.luanGiai && simData.luanGiai.summary && simData.luanGiai.summary.breakdown) 
+      ? Object.values(simData.luanGiai.summary.breakdown).sort((a,b) => b.count - a.count).slice(0,3).map(d => d.name).join(', ')
+      : '';
+
   await doInsertVvip({
     phone_number: phone,
-    carrier: carrier,
-    sim_que: que,
-    price: null,
+    carrier: simData.nhaMang || '',
+    sim_que: simData.queDich?.queChu?.name || '',
+    que_bien: simData.queDich?.queBien?.name || '',
+    cat_percent: simData.luanGiai?.catPercent || 0,
+    hung_percent: simData.luanGiai?.hungPercent || 0,
+    tu_truong_chinh: tuTruongChinh,
+    price: simData.price ? parseInt(String(simData.price).replace(/[^0-9]/g, ''), 10) : null,
     tags: ""
   });
 };
 
-window.saveBatchSim = async function(phone, carrier, que, defaultPrice) {
-  if (!phone) return;
-  const cleanInt = String(defaultPrice || '').replace(/[^0-9]/g, '');
+window.saveBatchSim = async function(phone) {
+  if (!phone || !window.lastAnalyzedBatch) return;
+
+  const item = window.lastAnalyzedBatch.find(i => i.digits === phone);
+  if (!item) return;
+
+  const r = item.result;
+  if (!r || r.error) return;
+
+  const tuTruongChinh = (r.luanGiai && r.luanGiai.summary && r.luanGiai.summary.breakdown) 
+      ? Object.values(r.luanGiai.summary.breakdown).sort((a,b) => b.count - a.count).slice(0,3).map(d => d.name).join(', ')
+      : '';
+
+  const cleanInt = String(item.price || '').replace(/[^0-9]/g, '');
   const priceInt = cleanInt ? parseInt(cleanInt, 10) : null;
   
   await doInsertVvip({
     phone_number: phone,
-    carrier: carrier,
-    sim_que: que,
+    carrier: item.carrier || r.nhaMang || '',
+    sim_que: r.queDich?.queChu?.name || '',
+    que_bien: r.queDich?.queBien?.name || '',
+    cat_percent: r.luanGiai?.catPercent || 0,
+    hung_percent: r.luanGiai?.hungPercent || 0,
+    tu_truong_chinh: tuTruongChinh,
     price: priceInt,
     tags: ""
   });

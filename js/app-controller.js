@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Xóa dataset để không bị dính giá cũ khi Sếp tự gõ số mới tay
       inputSingle.dataset.price = '';
     }
-
+    window.lastAnalyzedSingle = result;
     resultSingle.innerHTML = renderSingleResult(result);
   }
 
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const result = analyzeSim(item.digits);
       return { ...item, result };
     });
-
+    window.lastAnalyzedBatch = analyzed;
     resultBatch.innerHTML = renderBatchResult(analyzed);
 
     document.querySelectorAll('.phone-cell').forEach(cell => {

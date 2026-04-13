@@ -97,14 +97,14 @@ function syncSupabaseToSheet() {
     // Nếu chưa có tab KhoSim_Backup thì tự động tạo mới
     if (!sheet) {
       sheet = ss.insertSheet(SHEET_NAME);
-      // Tạo tiêu đề luôn
-      sheet.appendRow(["ID", "Phone", "Price", "Carrier", "Tags", "Sim_Que", "Created_At", "Last Backup Time"]);
-      sheet.getRange(1, 1, 1, 8).setFontWeight("bold").setBackground("#f3f3f3");
+      // Tạo tiêu đề 12 cột (thay vì 8 cột như cũ)
+      sheet.appendRow(["ID", "Phone", "Price", "Carrier", "Tags", "Sim_Que", "Que_Bien", "Cat_Percent", "Hung_Percent", "Tu_Truong_Chinh", "Created_At", "Last Backup Time"]);
+      sheet.getRange(1, 1, 1, 12).setFontWeight("bold").setBackground("#f3f3f3");
     }
 
     // Đọc dữ liệu hiện tại từ Sheet
     const lastRow = sheet.getLastRow();
-    const lastCol = sheet.getLastColumn() < 8 ? 8 : sheet.getLastColumn();
+    const lastCol = sheet.getLastColumn() < 12 ? 12 : sheet.getLastColumn();
     let currentData = [];
     if (lastRow > 1) {
       currentData = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
@@ -135,6 +135,10 @@ function syncSupabaseToSheet() {
           row.carrier || '',
           row.tags || '',
           row.sim_que || '',
+          row.que_bien || '',
+          row.cat_percent || '',
+          row.hung_percent || '',
+          row.tu_truong_chinh || '',
           row.created_at || '',
           now 
         ]);
@@ -155,6 +159,10 @@ function syncSupabaseToSheet() {
         row.carrier || '',
         row.tags || '',
         row.sim_que || '',
+        row.que_bien || '',
+        row.cat_percent || '',
+        row.hung_percent || '',
+        row.tu_truong_chinh || '',
         row.created_at || '',
         now
       ]);
@@ -167,14 +175,14 @@ function syncSupabaseToSheet() {
         sheet.getRange(2, 1, lastRow - 1, lastCol).setFontLine("none").setFontColor("black"); // Xóa gạch ngang cũ
       }
       
-      sheet.getRange(2, 1, finalRows.length, 8).setValues(finalRows);
+      sheet.getRange(2, 1, finalRows.length, 12).setValues(finalRows);
       
       // 4. Kẻ vạch ngang cho các Sim đã bị xóa
       if (deletedIndices.length > 0) {
         const rangesToStrike = [];
         deletedIndices.forEach(idx => {
           const rowIndex = idx + 2; // +1 vì header, +1 vì index bắt đầu từ 0
-          rangesToStrike.push(`A${rowIndex}:H${rowIndex}`);
+          rangesToStrike.push(`A${rowIndex}:L${rowIndex}`);
         });
         
         // Dùng RangeList để chỉnh CSS định dạng hàng loạt siêu nhanh

@@ -40,7 +40,7 @@ function renderSingleResult(r) {
       <div class="phone-display__number">${formatted}</div>
       ${r.price ? `<div style="font-size: 1.2rem; color: var(--color-cat); font-weight: 700; margin: 4px 0 8px;">Giá: ${r.price}</div>` : ''}
       <div class="phone-display__carrier">📱 ${nhaMang}</div>
-      <button class="btn-save-fab" onclick="window.saveCurrentSim('${digits}', '${nhaMang}', '${queDich?.queChu?.name || ''}')" title="Lưu vào kho VVIP">
+      <button class="btn-save-fab" onclick="window.saveCurrentSim('${digits}')" title="Lưu vào kho VVIP">
         <span style="font-size:1.2rem">💾</span> <span>Lưu VVIP</span>
       </button>
     </div>
@@ -233,7 +233,7 @@ function renderBatchResult(analyzed) {
         <td>${item.price || '—'}</td>
         <td>${item.carrier || r.nhaMang}</td>
         <td>${r.luanGiai.catPercent}%</td>
-        <td><button class="btn-save-icon" onclick="window.saveBatchSim('${r.digits}', '${item.carrier || r.nhaMang}', '${r.queDich.queChu?.name || ''}', '${item.price || ''}')" title="Lưu số này">💾</button></td>
+        <td><button class="btn-save-icon" onclick="window.saveBatchSim('${r.digits}')" title="Lưu số này">💾</button></td>
       </tr>`;
   });
 
