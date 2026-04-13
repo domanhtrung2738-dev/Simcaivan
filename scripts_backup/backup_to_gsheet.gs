@@ -17,10 +17,10 @@
  * 7. Lưu và Cấp quyền cho Script chạy.
  */
 
-const SUPABASE_URL = 'https://XXXXX.supabase.co'; 
+const SUPABASE_URL = 'https://zdxeadkxwocgkvumzprk.supabase.co'; 
 // API URL của bạn (Ví dụ: https://xyz.supabase.co)
 
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVC...'; 
+const SUPABASE_KEY = 'sb_publishable_XrTybfIlazMYUqXXqzQ_CA_rnQgQCaq'; 
 // Lấy thẻ ANON_KEY hoặc SERVICE_ROLE_KEY trong mục Settings > API của Supabase
 
 const SHEET_NAME = 'KhoSim_Backup'; 

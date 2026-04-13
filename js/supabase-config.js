@@ -5,8 +5,8 @@
  */
 
 // Thay thế bằng URL và ANON_KEY từ dự án Supabase của bạn
-const SUPABASE_URL = 'https://XXXX.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbG...';
+const SUPABASE_URL = 'https://zdxeadkxwocgkvumzprk.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_XrTybfIlazMYUqXXqzQ_CA_rnQgQCaq';
 
 // Khởi tạo client chỉ khi thư viện supabase đã được nhúng
 let supabase = null;
