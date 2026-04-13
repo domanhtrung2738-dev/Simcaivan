@@ -36,6 +36,30 @@ function onOpen() {
     .addToUi();
 }
 
+/**
+ * Hàm hỗ trợ chạy qua đường link Web App (GET)
+ */
+function doGet(e) {
+  try {
+    syncSupabaseToSheet();
+    return ContentService.createTextOutput("Đồng bộ dữ liệu Supabase -> Google Sheets thành công!");
+  } catch (err) {
+    return ContentService.createTextOutput("Lỗi đồng bộ: " + err.message);
+  }
+}
+
+/**
+ * Hàm hỗ trợ chạy qua đường link Web App (POST)
+ */
+function doPost(e) {
+  try {
+    syncSupabaseToSheet();
+    return ContentService.createTextOutput("Đồng bộ dữ liệu Supabase -> Google Sheets thành công!");
+  } catch (err) {
+    return ContentService.createTextOutput("Lỗi đồng bộ: " + err.message);
+  }
+}
+
 function syncSupabaseToSheet() {
   const table = 'sim_vvip';
   const url = `${SUPABASE_URL}/rest/v1/${table}?select=*`;
